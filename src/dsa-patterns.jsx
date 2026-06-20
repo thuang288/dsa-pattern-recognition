@@ -2773,8 +2773,6 @@ export default function DSAPatterns() {
   const [templateIdx, setTemplateIdx] = useState(0);
   const [showDetail, setShowDetail] = useState(false);
   const [showConstraints, setShowConstraints] = useState(false);
-  const [showInputTypes, setShowInputTypes] = useState(false);
-  const [selectedInput, setSelectedInput] = useState(null);
 
   const [isMobile, setIsMobile] = useState(
     typeof window !== "undefined" && window.innerWidth < 700
