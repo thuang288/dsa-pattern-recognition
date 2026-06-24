@@ -2024,6 +2024,33 @@ while i < n:
 return result`
       },
       {
+        label: "Insert Interval (One-Pass Single Loop)",
+        hint: "same problem as above, but collapses all 3 phases into a single loop with early return — fewer lines, same correctness",
+        code: `res = []
+
+for i in range(len(intervals)):
+    # Case 1: new interval ends before current starts — no overlap
+    # new interval goes here, everything from i onward is untouched
+    if newInterval[1] < intervals[i][0]:
+        res.append(newInterval)
+        return res + intervals[i:]   # early return — rest of list is unaffected
+
+    # Case 2: current interval ends before new interval starts — no overlap
+    # keep current interval as-is, move to next
+    elif newInterval[0] > intervals[i][1]:
+        res.append(intervals[i])
+
+    # Case 3: overlap — merge by taking min start, max end
+    # newInterval keeps growing as it absorbs more overlapping intervals
+    else:
+        newInterval = [min(newInterval[0], intervals[i][0]),
+                       max(newInterval[1], intervals[i][1])]
+
+# if we never hit the early return, the merged interval goes at the end
+res.append(newInterval)
+return res`
+      },
+      {
         label: "Meeting Rooms I (can attend all?)",
         hint: "'can one person attend all meetings', 'no overlap check' — just check if any two intervals overlap after sorting",
         code: `intervals.sort(key=lambda x: x[0])  # sort by start time
