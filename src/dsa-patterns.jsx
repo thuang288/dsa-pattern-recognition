@@ -1306,78 +1306,117 @@ return any(dfs(i) for i in range(n) if state[i] == 0)`
     example: "Redundant Connection, Number of Provinces, Accounts Merge",
     constraint: { label: "n ≤ 10^6 · O(α(n))", color: "#f9ca24" },
     approach: [
-      "Initialize parent array: parent[i] = i (each node is its own group)",
-      "Implement find(x) with path compression: if parent[x] != x → parent[x] = find(parent[x])",
-      "Implement union(x, y): find roots of both, if same root → already connected (cycle). Else merge",
+      "Build a DSU class with __init__(self, n) setting self.parent = list(range(n)) and self.rank = [1] * n",
+      "Implement find(node): loop up the parent chain with path compression, return the root",
+      "Implement union(u, v): find roots of both. If same root → already connected (cycle). Else merge by rank and return True",
       "For cycle detection: if union returns False (same root) → that edge is redundant",
-      "For counting components: after all unions, count unique roots with len(set(find(i) for i in range(n)))",
+      "For counting components: start res = n, decrement res by 1 every time union() returns True",
       "For dynamic grid problems: run union on adjacent land cells as they're added, track component count",
-      "Each successful union decreases component count by 1 — useful for tracking running count"
+      "Wrapping find/union in a class keeps state clean and makes the code reusable across multiple problems"
     ],
     templates: [
       {
-        label: "Core Template",
+        label: "Core Template (DSU Class)",
         hint: "any problem where you need to dynamically merge groups and check membership — use this as your starting skeleton",
-        code: `parent = list(range(n))  # each node starts as its own parent (its own group)
-rank = [0] * n           # rank = approximate tree depth, used to keep tree flat
+        code: `class DSU:
+    def __init__(self, n):
+        self.parent = list(range(n))  # each node starts as its own parent (its own group)
+        self.rank = [1] * n           # rank = approximate tree size, keeps tree flat
 
-def find(x):
-    if parent[x] != x:
-        parent[x] = find(parent[x])  # path compression: point directly to root
-        # this flattens the tree so future finds are faster
-    return parent[x]
+    def find(self, node):
+        cur = node
+        while cur != self.parent[cur]:
+            # path compression (path halving): point to grandparent each step
+            self.parent[cur] = self.parent[self.parent[cur]]
+            cur = self.parent[cur]
+        return cur  # cur is now the root of this group
 
-def union(x, y):
-    px, py = find(x), find(y)   # find roots of both groups
-    if px == py: return False    # already in same group — adding edge = cycle
-    # attach smaller tree under larger tree to keep depth minimal
-    if rank[px] < rank[py]:
-        px, py = py, px
-    parent[py] = px              # merge groups
-    if rank[px] == rank[py]:
-        rank[px] += 1            # only grows when two equal-rank trees merge
-    return True`
+    def union(self, u, v):
+        pu = self.find(u)   # root of u's group
+        pv = self.find(v)   # root of v's group
+        if pu == pv:
+            return False     # already in same group — adding edge = cycle
+        # attach smaller-rank tree under larger-rank tree to keep depth minimal
+        if self.rank[pv] > self.rank[pu]:
+            pu, pv = pv, pu
+        self.parent[pv] = pu      # merge groups
+        self.rank[pu] += self.rank[pv]  # update rank of new root
+        return True
+
+# Usage:
+dsu = DSU(n)
+for u, v in edges:
+    dsu.union(u, v)`
       },
       {
         label: "Detect Cycle (Redundant Connection)",
         hint: "'redundant connection', 'find the edge that creates a cycle in undirected graph' — if union returns False, that edge connects already-connected nodes",
-        code: `parent = list(range(n + 1))  # 1-indexed nodes
+        code: `class DSU:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [1] * n
 
-def find(x):
-    if parent[x] != x:
-        parent[x] = find(parent[x])  # path compression
-    return parent[x]
+    def find(self, node):
+        cur = node
+        while cur != self.parent[cur]:
+            self.parent[cur] = self.parent[self.parent[cur]]  # path compression
+            cur = self.parent[cur]
+        return cur
 
-def union(x, y):
-    px, py = find(x), find(y)
-    if px == py: return False    # x and y already connected — this edge is redundant
-    parent[px] = py              # merge the two groups
-    return True
+    def union(self, u, v):
+        pu, pv = self.find(u), self.find(v)
+        if pu == pv:
+            return False   # already connected — this edge is redundant
+        if self.rank[pv] > self.rank[pu]:
+            pu, pv = pv, pu
+        self.parent[pv] = pu
+        self.rank[pu] += self.rank[pv]
+        return True
 
-for u, v in edges:
-    if not union(u, v):
-        return [u, v]   # this edge connects two already-connected nodes = cycle`
+class Solution:
+    def findRedundantConnection(self, edges):
+        n = len(edges)
+        dsu = DSU(n + 1)  # 1-indexed nodes
+
+        for u, v in edges:
+            if not dsu.union(u, v):
+                return [u, v]  # this edge creates a cycle — it's redundant`
       },
       {
         label: "Count Connected Components",
         hint: "'number of connected components', 'how many separate groups' — count unique roots after all unions are done",
-        code: `parent = list(range(n))  # n nodes, each in its own group
+        code: `class DSU:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [1] * n
 
-def find(x):
-    if parent[x] != x:
-        parent[x] = find(parent[x])  # path compression
-    return parent[x]
+    def find(self, node):
+        cur = node
+        while cur != self.parent[cur]:
+            self.parent[cur] = self.parent[self.parent[cur]]  # path compression
+            cur = self.parent[cur]
+        return cur
 
-def union(x, y):
-    px, py = find(x), find(y)
-    if px == py: return   # already same group — nothing to do
-    parent[px] = py       # merge groups
+    def union(self, u, v):
+        pu, pv = self.find(u), self.find(v)
+        if pu == pv:
+            return False   # already same group — nothing merged
+        if self.rank[pv] > self.rank[pu]:
+            pu, pv = pv, pu
+        self.parent[pv] = pu
+        self.rank[pu] += self.rank[pv]
+        return True
 
-for u, v in edges:
-    union(u, v)
+class Solution:
+    def countComponents(self, n, edges):
+        dsu = DSU(n)
+        res = n  # start assuming every node is its own component
 
-# count how many unique roots exist — each unique root = one component
-return len(set(find(i) for i in range(n)))`
+        for u, v in edges:
+            if dsu.union(u, v):
+                res -= 1   # successful merge — one fewer component
+
+        return res`
       }
     ],
     confusables: [
