@@ -1203,6 +1203,36 @@ for node in graph:
         components += 1`
       },
       {
+        label: "Build + BFS Traversal",
+        hint: "same as DFS version above, but use BFS when you ALSO need shortest path / distance between nodes in the same traversal",
+        code: `from collections import defaultdict, deque
+graph = defaultdict(list)
+for a, b in edges:
+    graph[a].append(b)
+    graph[b].append(a)  # both directions for undirected graph (remove for directed)
+
+visited = set()
+
+def bfs(start):
+    queue = deque([start])
+    visited.add(start)              # mark before enqueueing to avoid duplicates
+    while queue:
+        node = queue.popleft()
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(neighbor)  # explores level by level
+
+components = 0
+for node in graph:
+    if node not in visited:
+        bfs(node)        # one call explores the whole connected component
+        components += 1
+
+# DFS vs BFS here: both correctly count/explore components.
+# Use BFS instead of DFS when you also need shortest distance between nodes.`
+      },
+      {
         label: "Topological Sort (Course Schedule)",
         hint: "'course schedule', 'task ordering', 'prerequisites' — need a valid ordering where dependencies come first, detect cycle if impossible",
         code: `from collections import defaultdict, deque
