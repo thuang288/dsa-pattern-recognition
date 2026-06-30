@@ -3018,82 +3018,54 @@ export default function DSAPatterns() {
   }, [selected]);
 
   // Syntax highlighting for Python
-  const highlightCode = (code) => {
-    const keywords = /\b(def|class|return|if|elif|else|for|while|in|not|and|or|import|from|True|False|None|with|as|pass|break|continue|lambda|yield|self)\b/g;
-    const builtins = /\b(len|range|print|list|dict|set|tuple|int|str|float|bool|max|min|sum|sorted|enumerate|zip|map|filter|any|all|append|pop|push|get|defaultdict|Counter|deque|heapq|bisect|abs|divmod|ord|chr)\b/g;
-    const strings = /(["'`])(?:(?!\1)[^\\]|\\.)*\1/g;
-    const comments = /#.*/g;
-    const numbers = /\b\d+\.?\d*\b/g;
+  const kwSet = new Set(['def','class','return','if','elif','else','for','while','in','not','and','or','import','from','True','False','None','with','as','pass','break','continue','lambda','yield','self']);
+  const builtinSet = new Set(['len','range','print','list','dict','set','tuple','int','str','float','bool','max','min','sum','sorted','enumerate','zip','map','filter','any','all','append','pop','get','defaultdict','Counter','deque','heapq','bisect','abs','divmod','ord','chr']);
 
+  const highlightCode = (code) => {
     const lines = code.split('\n');
     return lines.map((line, li) => {
-      // parse line into tokens
-      const parts = [];
-      let remaining = line;
-      let offset = 0;
-
-      // find comment position
-      const commentMatch = line.match(/#/);
-      const commentStart = commentMatch ? line.indexOf('#') : -1;
-
-      // tokenize non-comment part
+      const commentStart = line.indexOf('#');
       const codePart = commentStart >= 0 ? line.slice(0, commentStart) : line;
       const commentPart = commentStart >= 0 ? line.slice(commentStart) : null;
 
-      // simple token scanner
-      let i = 0;
-      let result = [];
-      const tokens = [];
-
-      // collect string ranges
+      // collect string ranges within the code part
       const strRanges = [];
-      let sr;
       const strRegex = /(["'])(?:(?!\1)[^\\]|\\.)*\1/g;
+      let sr;
       while ((sr = strRegex.exec(codePart)) !== null) {
         strRanges.push([sr.index, sr.index + sr[0].length, sr[0]]);
       }
 
-      let pos = 0;
-      const addText = (text, color) => { if (text) result.push(<span key={result.length} style={{ color }}>{text}</span>); };
-
-      const kwSet = new Set(['def','class','return','if','elif','else','for','while','in','not','and','or','import','from','True','False','None','with','as','pass','break','continue','lambda','yield','self']);
-      const builtinSet = new Set(['len','range','print','list','dict','set','tuple','int','str','float','bool','max','min','sum','sorted','enumerate','zip','map','filter','any','all','append','pop','get','defaultdict','Counter','deque','heapq','bisect','abs','divmod','ord','chr']);
-
-      let inStr = false;
-      let strChar = '';
+      const result = [];
       let buf = '';
       let charIdx = 0;
 
       while (charIdx < codePart.length) {
         const ch = codePart[charIdx];
-        // check if we're starting a string
-        const strRange = strRanges.find(([s,e]) => s === charIdx);
+        const strRange = strRanges.find(([s]) => s === charIdx);
         if (strRange) {
-          // flush buffer
-          if (buf) { flushBuf(buf, result, kwSet, builtinSet); buf = ''; }
+          if (buf) { flushBuf(buf, result); buf = ''; }
           result.push(<span key={result.length} style={{ color: '#e17055' }}>{strRange[2]}</span>);
           charIdx = strRange[1];
           continue;
         }
-        // word char
         if (/\w/.test(ch)) {
           buf += ch;
         } else {
-          if (buf) { flushBuf(buf, result, kwSet, builtinSet); buf = ''; }
-          // operators, punctuation
+          if (buf) { flushBuf(buf, result); buf = ''; }
           const opColor = /[+\-*/%=<>!&|^~]/.test(ch) ? '#74b9ff' : '#ccc';
           result.push(<span key={result.length} style={{ color: /[()[\]{},.:;]/.test(ch) ? '#888' : opColor }}>{ch}</span>);
         }
         charIdx++;
       }
-      if (buf) { flushBuf(buf, result, kwSet, builtinSet); buf = ''; }
+      if (buf) { flushBuf(buf, result); buf = ''; }
       if (commentPart) result.push(<span key={result.length} style={{ color: '#6c6c6c', fontStyle: 'italic' }}>{commentPart}</span>);
 
       return <div key={li}>{result}{'\n'}</div>;
     });
   };
 
-  function flushBuf(buf, result, kwSet, builtinSet) {
+  function flushBuf(buf, result) {
     let color = '#b0c4de';
     if (kwSet.has(buf)) color = '#74b9ff';
     else if (builtinSet.has(buf)) color = '#a29bfe';
