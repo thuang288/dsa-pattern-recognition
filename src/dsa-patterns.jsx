@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 const patterns = [
   {
@@ -2941,6 +2941,34 @@ const inputTypes = [
   },
 ];
 
+// Paraphrased problem summaries (not verbatim LeetCode text) used for "Real Problem" quiz mode.
+// Each maps to the pattern that solves it.
+const quizProblems = [
+  { pattern: "Two Pointers", title: "Two Sum II", desc: "You're given a sorted array of integers and a target value. Find two numbers in the array that add up to the target and return their positions (1-indexed). You may assume exactly one solution exists." },
+  { pattern: "Sliding Window", title: "Longest Substring Without Repeating Characters", desc: "Given a string, find the length of the longest substring that doesn't contain any repeating characters." },
+  { pattern: "Binary Search", title: "Search in Rotated Sorted Array", desc: "You're given an array that was originally sorted in ascending order, then rotated at some unknown pivot. Given a target value, return its index, or -1 if it's not in the array. Your solution must run in O(log n) time." },
+  { pattern: "Monotonic Stack", title: "Daily Temperatures", desc: "Given a list of daily temperatures, return an array where each position tells you how many days you'd have to wait until a warmer temperature. If there's no future day that's warmer, put 0 for that day." },
+  { pattern: "HashMap", title: "Group Anagrams", desc: "Given an array of strings, group all the anagrams together. You can return the groups in any order." },
+  { pattern: "Top K Elements / Heap", title: "Kth Largest Element in an Array", desc: "Given an unsorted array of integers and an integer k, find the kth largest element in the array. Note: it's the kth largest in sorted order, not the kth distinct element." },
+  { pattern: "Two Heaps", title: "Find Median from Data Stream", desc: "Design a data structure that supports adding integers one at a time from a stream, and can efficiently return the median of all integers added so far at any point." },
+  { pattern: "DFS (Binary Trees)", title: "Binary Tree Paths", desc: "Given the root of a binary tree, return all root-to-leaf paths in any order, where each path is represented as a string of node values separated by arrows." },
+  { pattern: "DFS with Return Value (Trees)", title: "Diameter of Binary Tree", desc: "Given the root of a binary tree, return the length of the diameter — the longest path between any two nodes in the tree. This path may or may not pass through the root." },
+  { pattern: "BST Patterns", title: "Validate Binary Search Tree", desc: "Given the root of a binary tree, determine if it's a valid binary search tree, meaning every node's left subtree only contains values less than the node, and the right subtree only contains values greater." },
+  { pattern: "BFS (Graph/Matrix)", title: "Rotting Oranges", desc: "You're given a grid where each cell is empty, has a fresh orange, or has a rotten orange. Every minute, any fresh orange adjacent to a rotten one becomes rotten too. Return the minimum number of minutes until no fresh orange remains, or -1 if that's impossible." },
+  { pattern: "DFS (Graph/Matrix)", title: "Number of Islands", desc: "Given a 2D grid of '1's (land) and '0's (water), count the number of islands. An island is formed by connecting adjacent lands horizontally or vertically." },
+  { pattern: "Graph / Adjacency List", title: "Course Schedule", desc: "You're given the total number of courses and a list of prerequisite pairs. Determine if it's possible to finish all courses given these prerequisites (i.e. is there no circular dependency)." },
+  { pattern: "Union Find (DSU)", title: "Number of Provinces", desc: "There are n cities, and you're given a matrix indicating which cities are directly connected. A province is a group of directly or indirectly connected cities. Return the total number of provinces." },
+  { pattern: "Backtracking", title: "Subsets", desc: "Given an array of unique integers, return all possible subsets (the power set). The solution set must not contain duplicate subsets." },
+  { pattern: "Dynamic Programming", title: "Coin Change", desc: "You're given an array of coin denominations and a target amount. Return the fewest number of coins needed to make up that amount. If it's not possible, return -1." },
+  { pattern: "Greedy", title: "Jump Game", desc: "You're given an array where each element represents your maximum jump length from that position. Starting at index 0, determine if you can reach the last index." },
+  { pattern: "Intervals", title: "Merge Intervals", desc: "Given an array of intervals where each interval is [start, end], merge all overlapping intervals and return an array of the non-overlapping intervals that cover all the input intervals." },
+  { pattern: "Stack", title: "Valid Parentheses", desc: "Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid — meaning every bracket is closed by the same type in the correct order." },
+  { pattern: "Linked List", title: "Linked List Cycle", desc: "Given the head of a linked list, determine if the linked list has a cycle in it, meaning some node can be reached again by continuously following the next pointer." },
+  { pattern: "Math", title: "Happy Number", desc: "A number is 'happy' if repeatedly replacing it with the sum of the squares of its digits eventually reaches 1. Given a number, determine if it's happy." },
+  { pattern: "Bit Manipulation", title: "Single Number", desc: "Given a non-empty array of integers where every element appears twice except for one, find that single element. Your algorithm should run in linear time and use constant extra space." },
+  { pattern: "Prefix Sum", title: "Subarray Sum Equals K", desc: "Given an array of integers and an integer k, return the total number of contiguous subarrays whose sum equals k." },
+];
+
 const patternGroups = [
   { label: "Arrays", patterns: ["Two Pointers", "Sliding Window", "Binary Search", "Monotonic Stack", "HashMap", "Prefix Sum"] },
   { label: "Heaps", patterns: ["Top K Elements / Heap", "Two Heaps"] },
@@ -2963,6 +2991,8 @@ export default function DSAPatterns() {
   const [collapsedGroups, setCollapsedGroups] = useState(new Set());
   const [reviewed, setReviewed] = useState(new Set());
   const [quizIdx, setQuizIdx] = useState(0);
+  const [quizOrder, setQuizOrder] = useState(() => patterns.map(p => p.name).sort(() => Math.random() - 0.5));
+  const [quizMode, setQuizMode] = useState("keywords"); // "keywords" | "problem"
   const [quizRevealed, setQuizRevealed] = useState(false);
   const [quizGuess, setQuizGuess] = useState(null);
   const [quizScore, setQuizScore] = useState({ correct: 0, total: 0 });
@@ -3117,7 +3147,19 @@ export default function DSAPatterns() {
   };
 
   // Quiz mode
-  const quizPattern = patterns[quizIdx % patterns.length];
+  const quizPattern = patterns.find(p => p.name === quizOrder[quizIdx % quizOrder.length]) || patterns[0];
+
+  // Shuffle options ONCE per question (memoized on quizIdx), not on every render.
+  // Without this, clicking an answer triggers a re-render which would re-run
+  // Math.random() and reshuffle the buttons right as the color feedback appears.
+  const quizOptions = useMemo(() => {
+    const distractors = patterns
+      .filter(p => p.name !== quizPattern.name)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 5);
+    return [quizPattern, ...distractors].sort(() => Math.random() - 0.5);
+  }, [quizIdx, quizPattern.name]);
+
   const handleQuizGuess = (guess) => {
     if (quizRevealed) return;
     setQuizGuess(guess);
@@ -3128,7 +3170,7 @@ export default function DSAPatterns() {
     }));
   };
   const nextQuiz = () => {
-    setQuizIdx(prev => (prev + 1) % patterns.length);
+    setQuizIdx(prev => (prev + 1) % quizOrder.length);
     setQuizRevealed(false);
     setQuizGuess(null);
   };
@@ -3213,11 +3255,13 @@ export default function DSAPatterns() {
   );
 
   // Quiz view
-  const quizView = (
+  const quizView = (() => {
+    const quizProblem = quizProblems.find(q => q.pattern === quizPattern.name);
+    return (
     <div style={{ padding: "24px", maxWidth: 700, margin: "0 auto", overflowY: "auto", height: "calc(100vh - 100px)" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
         <div style={{ fontSize: 14, color: "#555" }}>
-          Pattern <span style={{ color: "#fff" }}>{(quizIdx % patterns.length) + 1}</span> / {patterns.length}
+          Pattern <span style={{ color: "#fff" }}>{(quizIdx % quizOrder.length) + 1}</span> / {quizOrder.length}
         </div>
         <div style={{ fontSize: 14 }}>
           Score: <span style={{ color: "#26de81", fontWeight: 700 }}>{quizScore.correct}</span>
@@ -3225,34 +3269,73 @@ export default function DSAPatterns() {
         </div>
       </div>
 
+      {/* Mode toggle */}
+      <div style={{ display: "flex", gap: 6, marginBottom: 16 }}>
+        {[
+          { mode: "keywords", label: "Keywords & Tells" },
+          { mode: "problem", label: "Real Problem" },
+        ].map(({ mode, label }) => (
+          <button
+            key={mode}
+            onClick={() => { setQuizMode(mode); setQuizRevealed(false); setQuizGuess(null); }}
+            style={{
+              flex: 1,
+              background: quizMode === mode ? "#fff" : "#1a1a1a",
+              border: "1px solid #2a2a2a",
+              borderRadius: 6,
+              color: quizMode === mode ? "#000" : "#888",
+              fontFamily: "inherit",
+              fontSize: 12,
+              fontWeight: 700,
+              padding: "8px 12px",
+              cursor: "pointer",
+            }}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
       {/* Question */}
       <div style={{ background: "#111", border: "1px solid #1e1e1e", borderRadius: 10, padding: 24, marginBottom: 20 }}>
         <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, textTransform: "uppercase", marginBottom: 16 }}>
           Which pattern is this?
         </div>
-        <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 11, color: "#888", marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>Keywords</div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {quizPattern.keywords.slice(0, 6).map(k => (
-              <span key={k} style={{ background: "#1a1a1a", border: "1px solid #2a2a2a", color: "#ccc", padding: "4px 10px", borderRadius: 20, fontSize: 13 }}>
-                {k}
-              </span>
-            ))}
-          </div>
-        </div>
-        <div>
-          <div style={{ fontSize: 11, color: "#888", marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>Tells</div>
-          {quizPattern.tells.slice(0, 3).map((t, i) => (
-            <div key={i} style={{ fontSize: 13, color: "#aaa", padding: "4px 0", borderBottom: "1px solid #1a1a1a" }}>• {t}</div>
-          ))}
-        </div>
+
+        {quizMode === "problem" ? (
+          quizProblem ? (
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 10 }}>{quizProblem.title}</div>
+              <div style={{ fontSize: 14, color: "#ccc", lineHeight: 1.7 }}>{quizProblem.desc}</div>
+            </div>
+          ) : (
+            <div style={{ fontSize: 13, color: "#555" }}>No problem description available for this pattern yet — switch to Keywords mode.</div>
+          )
+        ) : (
+          <>
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: 11, color: "#888", marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>Keywords</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {quizPattern.keywords.slice(0, 6).map(k => (
+                  <span key={k} style={{ background: "#1a1a1a", border: "1px solid #2a2a2a", color: "#ccc", padding: "4px 10px", borderRadius: 20, fontSize: 13 }}>
+                    {k}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: 11, color: "#888", marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>Tells</div>
+              {quizPattern.tells.slice(0, 3).map((t, i) => (
+                <div key={i} style={{ fontSize: 13, color: "#aaa", padding: "4px 0", borderBottom: "1px solid #1a1a1a" }}>• {t}</div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Options - shuffled subset of patterns */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
-        {[quizPattern, ...patterns.filter(p => p.name !== quizPattern.name).sort(() => Math.random() - 0.5).slice(0, 5)]
-          .sort(() => Math.random() - 0.5)
-          .map(opt => {
+        {quizOptions.map(opt => {
             let bg = "#111", border = "#2a2a2a", color = "#ccc";
             if (quizRevealed) {
               if (opt.name === quizPattern.name) { bg = "#26de8122"; border = "#26de81"; color = "#26de81"; }
@@ -3285,12 +3368,18 @@ export default function DSAPatterns() {
         </button>
       ) : (
         <div>
-          <div style={{ background: `${quizPattern.color}18`, border: `1px solid ${quizPattern.color}44`, borderRadius: 8, padding: 16, marginBottom: 12 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: quizPattern.color, marginBottom: 6 }}>
-              {quizGuess === quizPattern.name ? "✓ Correct!" : `✗ Answer: ${quizPattern.name}`}
-            </div>
-            <div style={{ fontSize: 12, color: "#aaa" }}>e.g. {quizPattern.example}</div>
-          </div>
+          {(() => {
+            const isCorrect = quizGuess === quizPattern.name;
+            const fbColor = isCorrect ? "#26de81" : "#FC5C65";
+            return (
+              <div style={{ background: `${fbColor}18`, border: `1px solid ${fbColor}44`, borderRadius: 8, padding: 16, marginBottom: 12 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: fbColor, marginBottom: 6 }}>
+                  {isCorrect ? "✓ Correct!" : `✗ Answer: ${quizPattern.name}`}
+                </div>
+                <div style={{ fontSize: 12, color: "#aaa" }}>e.g. {quizPattern.example}</div>
+              </div>
+            );
+          })()}
           <div style={{ display: "flex", gap: 10 }}>
             <button
               onClick={() => { selectPattern(quizPattern); setViewMode("normal"); }}
@@ -3300,7 +3389,7 @@ export default function DSAPatterns() {
             </button>
             <button
               onClick={nextQuiz}
-              style={{ flex: 1, background: quizPattern.color, border: "none", borderRadius: 8, color: "#000", fontFamily: "inherit", fontSize: 13, fontWeight: 700, padding: "10px", cursor: "pointer" }}
+              style={{ flex: 1, background: quizGuess === quizPattern.name ? "#26de81" : "#FC5C65", border: "none", borderRadius: 8, color: "#000", fontFamily: "inherit", fontSize: 13, fontWeight: 700, padding: "10px", cursor: "pointer" }}
             >
               Next Question →
             </button>
@@ -3309,6 +3398,7 @@ export default function DSAPatterns() {
       )}
     </div>
   );
+  })();
 
   // Detail panel
   const detailPanel = p ? (
@@ -3636,7 +3726,18 @@ export default function DSAPatterns() {
                 { mode: "quickref", label: "⚡ Quick Ref" },
                 { mode: "quiz", label: "🧠 Quiz" },
               ].map(({ mode, label }) => (
-                <button key={mode} onClick={() => setViewMode(viewMode === mode && mode !== "normal" ? "normal" : mode)}
+                <button key={mode} onClick={() => {
+                    const turningOn = !(viewMode === mode && mode !== "normal");
+                    if (mode === "quiz" && turningOn) {
+                      // reshuffle question order every time the user opens the quiz
+                      setQuizOrder(patterns.map(pat => pat.name).sort(() => Math.random() - 0.5));
+                      setQuizIdx(0);
+                      setQuizRevealed(false);
+                      setQuizGuess(null);
+                      setQuizScore({ correct: 0, total: 0 });
+                    }
+                    setViewMode(turningOn ? mode : "normal");
+                  }}
                   style={{ background: viewMode === mode ? "#fff" : "#1a1a1a", border: "1px solid #2a2a2a", borderRadius: 6, color: viewMode === mode ? "#000" : "#888", fontFamily: "inherit", fontSize: 11, fontWeight: 700, padding: "7px 12px", cursor: "pointer", whiteSpace: "nowrap" }}>
                   {label}
                 </button>
