@@ -3158,7 +3158,7 @@ export default function DSAPatterns() {
       .sort(() => Math.random() - 0.5)
       .slice(0, 5);
     return [quizPattern, ...distractors].sort(() => Math.random() - 0.5);
-  }, [quizIdx, quizPattern.name]);
+  }, [quizIdx, quizPattern]);
 
   const handleQuizGuess = (guess) => {
     if (quizRevealed) return;
