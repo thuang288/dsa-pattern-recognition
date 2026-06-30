@@ -3028,12 +3028,12 @@ export default function DSAPatterns() {
       const codePart = commentStart >= 0 ? line.slice(0, commentStart) : line;
       const commentPart = commentStart >= 0 ? line.slice(commentStart) : null;
 
-      // collect string ranges within the code part
-      const strRanges = [];
+      // collect string ranges within the code part, keyed by start index for O(1) lookup
+      const strRangeMap = new Map();
       const strRegex = /(["'])(?:(?!\1)[^\\]|\\.)*\1/g;
       let sr;
       while ((sr = strRegex.exec(codePart)) !== null) {
-        strRanges.push([sr.index, sr.index + sr[0].length, sr[0]]);
+        strRangeMap.set(sr.index, [sr.index, sr.index + sr[0].length, sr[0]]);
       }
 
       const result = [];
@@ -3042,7 +3042,7 @@ export default function DSAPatterns() {
 
       while (charIdx < codePart.length) {
         const ch = codePart[charIdx];
-        const strRange = strRanges.find(([s]) => s === charIdx);
+        const strRange = strRangeMap.get(charIdx);
         if (strRange) {
           if (buf) { flushBuf(buf, result); buf = ''; }
           result.push(<span key={result.length} style={{ color: '#e17055' }}>{strRange[2]}</span>);
