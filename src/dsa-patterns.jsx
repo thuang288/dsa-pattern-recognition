@@ -27,6 +27,7 @@ const patterns = [
       {
         label: "Opposite Ends (find a pair)",
         hint: "sorted array + find a pair/triplet that sums to target, or 'two numbers that...'",
+        complexity: "O(n) time · O(1) space",
         code: `left, right = 0, len(arr) - 1
 # start at opposite ends, squeeze inward
 
@@ -42,6 +43,7 @@ while left < right:
       {
         label: "Remove Duplicates In-Place",
         hint: "'remove duplicates in-place', 'return length of unique elements', input is sorted",
+        complexity: "O(n) time · O(1) space",
         code: `k = 1  # k = next position to write a unique value into
 # start at 1 because first element is always unique
 
@@ -56,6 +58,7 @@ return k  # k = count of unique elements`
       {
         label: "Three Pointers (3Sum)",
         hint: "'find all triplets', '3 numbers that sum to 0', need all unique combinations of 3 elements",
+        complexity: "O(n²) time · O(1) space",
         code: `nums.sort()  # must sort so two-pointer logic works
 result = []
 
@@ -77,6 +80,7 @@ return result`
       {
         label: "3-Way Partition (Dutch National Flag)",
         hint: "'sort colors', 'exactly 3 categories in-place', 'partition into 3 groups' — 3 pointers maintain left/mid/right boundaries",
+        complexity: "O(n) time · O(1) space",
         code: `# Dutch National Flag: partition array into 3 groups in O(n) time O(1) space
 # Works for: Sort Colors (0,1,2), any problem with exactly 3 distinct values
 
@@ -142,6 +146,7 @@ while i <= r:
       {
         label: "Variable Size Window",
         hint: "'longest/shortest subarray/substring that...', condition can be maintained by shrinking from left",
+        complexity: "O(n) time · O(1) space",
         code: `left = 0
 for right in range(len(arr)):
     window.add(arr[right])      # grow window by including right element
@@ -156,6 +161,7 @@ for right in range(len(arr)):
       {
         label: "Fixed Size Window (size k)",
         hint: "'subarray of size k', 'exactly k elements', window size is given and never changes",
+        complexity: "O(n) time · O(1) space",
         code: `window_sum = sum(arr[:k])  # initialize first window of size k
 result = window_sum
 
@@ -168,6 +174,7 @@ for i in range(k, len(arr)):
       {
         label: "Substring with Frequency Count",
         hint: "'longest substring with at most k distinct chars', 'minimum window substring', need to track character counts inside window",
+        complexity: "O(n) time · O(1) space",
         code: `from collections import defaultdict
 count = defaultdict(int)  # tracks frequency of chars in current window
 left = 0
@@ -225,6 +232,7 @@ for right in range(len(s)):
       {
         label: "Standard (find target)",
         hint: "sorted array + 'find index of', 'search for', 'does X exist' — one specific value to locate",
+        complexity: "O(log n) time · O(1) space",
         code: `lo, hi = 0, len(arr) - 1
 
 while lo <= hi:
@@ -241,6 +249,7 @@ return -1  # target not found`
       {
         label: "On Answer Space (feasibility)",
         hint: "'minimum speed/days/capacity to...', 'maximum minimum', 'is it possible to achieve X' — answer is a number in a range",
+        complexity: "O(n log(range)) time",
         code: `# Use when you're searching for the minimum/maximum VALUE that satisfies a condition
 # e.g. "minimum speed", "minimum capacity", "minimum days"
 lo, hi = min(arr), max(arr)  # search space is the range of possible answers
@@ -257,6 +266,7 @@ return lo  # lo == hi == the smallest feasible answer`
       {
         label: "Rotated Sorted Array",
         hint: "array was originally sorted but then rotated at some pivot — 'search in rotated sorted array'",
+        complexity: "O(log n) time · O(1) space",
         code: `lo, hi = 0, len(arr) - 1
 
 while lo <= hi:
@@ -316,6 +326,7 @@ return -1`
       {
         label: "Next Greater Element",
         hint: "'next greater element', 'next warmer temperature', 'next larger value to the right' — need the first bigger value for each element",
+        complexity: "O(n) time · O(n) space",
         code: `stack = []          # stores indices of elements waiting for their next greater
 result = [-1] * len(arr)  # default -1 if no greater element exists
 
@@ -331,6 +342,7 @@ return result`
       {
         label: "Daily Temperatures (distance to next greater)",
         hint: "'daily temperatures', 'how many days until warmer', 'distance to next greater' — same as next greater but you need the gap/distance, not the value",
+        complexity: "O(n) time · O(n) space",
         code: `stack = []          # stores indices, waiting for a warmer day
 result = [0] * len(temps)  # 0 = no warmer day found
 
@@ -346,6 +358,7 @@ return result`
       {
         label: "Largest Rectangle in Histogram",
         hint: "'largest rectangle in histogram', 'maximal rectangle in matrix' — for each bar, find how far left and right it can extend while staying the shortest",
+        complexity: "O(n) time · O(n) space",
         code: `stack = []    # stores indices, heights in increasing order
 max_area = 0
 arr = heights + [0]  # append 0 as sentinel to force all remaining bars to be popped
@@ -400,6 +413,7 @@ return max_area`
       {
         label: "Complement Lookup (Two Sum)",
         hint: "'two sum', 'find pair that sums to target', 'two numbers that add to X' — store complement, check if current number was seen",
+        complexity: "O(n) time · O(n) space",
         code: `seen = {}  # maps value → index
 
 for i, num in enumerate(nums):
@@ -412,6 +426,7 @@ for i, num in enumerate(nums):
       {
         label: "Frequency Count",
         hint: "'count frequency', 'find duplicates', 'most common element', 'valid anagram' — count occurrences then check/compare",
+        complexity: "O(n) time · O(n) space",
         code: `from collections import Counter
 
 count = Counter(nums)  # {value: frequency}
@@ -428,6 +443,7 @@ return max(count, key=count.get)`
       {
         label: "Group By Key (Group Anagrams)",
         hint: "'group anagrams', 'group by property', 'bucket by characteristic' — use a derived key to group related elements together",
+        complexity: "O(n) time · O(n) space",
         code: `from collections import defaultdict
 
 groups = defaultdict(list)
@@ -442,6 +458,7 @@ return list(groups.values())`
       {
         label: "Longest Consecutive Sequence",
         hint: "'longest consecutive sequence', 'consecutive elements' — use set for O(1) lookup, only start counting from sequence beginnings",
+        complexity: "O(n) time · O(n) space",
         code: `num_set = set(nums)  # O(1) lookup
 best = 0
 
@@ -495,6 +512,7 @@ return best`
       {
         label: "Kth Largest (min-heap of size k)",
         hint: "'kth largest element', 'find the kth biggest' — single element, not a list",
+        complexity: "O(n log k) time · O(k) space",
         code: `import heapq
 heap = []  # min-heap — the smallest element in heap is always at top
 
@@ -509,6 +527,7 @@ return heap[0]  # top of min-heap = smallest of top k = kth largest`
       {
         label: "Top K Frequent Elements",
         hint: "'top k most frequent', 'k most common elements' — frequency-based ranking",
+        complexity: "O(n log k) time · O(k) space",
         code: `from collections import Counter
 import heapq
 
@@ -525,6 +544,7 @@ return [num for freq, num in heap]`
       {
         label: "K Closest Points (custom key)",
         hint: "'k closest points to origin', 'k nearest' based on distance or a custom comparison — not frequency",
+        complexity: "O(n log k) time · O(k) space",
         code: `import heapq
 
 heap = []
@@ -577,6 +597,7 @@ return [[x, y] for _, x, y in heap]`
       {
         label: "Median From Data Stream",
         hint: "'data stream', 'addNum then findMedian', need median after each insertion",
+        complexity: "O(log n) per insert · O(1) query",
         code: `import heapq
 max_heap = []  # lower half — we store negatives because Python only has min-heap
 min_heap = []  # upper half — stores positives normally
@@ -600,6 +621,7 @@ def findMedian():
       {
         label: "Sliding Window Median",
         hint: "'median of every window of size k', elements slide in and out — need median continuously as window moves",
+        complexity: "O(n log k) time · O(k) space",
         code: `import heapq
 from collections import defaultdict
 
@@ -680,6 +702,7 @@ def medianSlidingWindow(nums, k):
       {
         label: "Preorder (root → left → right)",
         hint: "'serialize a tree', 'copy a tree', 'preorder traversal' — need to process the root before its children",
+        complexity: "O(n) time · O(h) space",
         code: `# Preorder: visit root FIRST, then recurse into children
 # Use for: serialization, copying a tree, prefix expression
 
@@ -703,6 +726,7 @@ def preorder_iterative(root):
       {
         label: "Inorder (left → root → right)",
         hint: "'inorder traversal', 'kth smallest in BST', 'sorted order from tree' — BST inorder always gives sorted output",
+        complexity: "O(n) time · O(h) space",
         code: `# Inorder: visit left subtree, THEN root, then right
 # Use for: BST sorted order, kth smallest, validate BST
 
@@ -728,6 +752,7 @@ def inorder_iterative(root):
       {
         label: "Postorder (left → right → root)",
         hint: "'delete a tree', 'evaluate expression tree', 'postorder traversal' — need both children processed before the parent",
+        complexity: "O(n) time · O(h) space",
         code: `# Postorder: visit both children BEFORE root
 # Use for: deleting a tree, evaluating expression trees, bottom-up problems
 
@@ -751,6 +776,7 @@ def postorder_iterative(root):
       {
         label: "Root-to-Leaf Paths",
         hint: "'all root to leaf paths', 'path sum', 'sum of root to leaf numbers' — need to track the full path as you go down",
+        complexity: "O(n) time · O(h) space",
         code: `# Use when the problem involves paths from root down to leaves
 # e.g. Path Sum, Binary Tree Paths, Sum Root to Leaf Numbers
 
@@ -810,6 +836,7 @@ return result`
       {
         label: "Height / Diameter",
         hint: "'diameter of binary tree', 'height of tree', 'longest path between any two nodes' — answer passes through a node using both its subtrees",
+        complexity: "O(n) time · O(h) space",
         code: `self.diameter = 0
 
 def dfs(node):
@@ -826,6 +853,7 @@ return self.diameter`
       {
         label: "Check Balanced",
         hint: "'is the tree height-balanced', 'balanced binary tree' — need height from both subtrees at every node to check the difference",
+        complexity: "O(n) time · O(h) space",
         code: `def dfs(node):
     if not node: return 0
     left  = dfs(node.left)
@@ -839,6 +867,7 @@ return dfs(root) != -1  # -1 means unbalanced somewhere`
       {
         label: "Lowest Common Ancestor",
         hint: "'lowest common ancestor', 'LCA of two nodes' — need to find where two nodes' paths first meet going up the tree",
+        complexity: "O(n) time · O(h) space",
         code: `def dfs(node):
     if not node or node == p or node == q:
         return node   # found one of the targets (or hit null)
@@ -851,6 +880,7 @@ return dfs(root) != -1  # -1 means unbalanced somewhere`
       {
         label: "Max Path Sum",
         hint: "'maximum path sum', 'path can start and end at any node' — path goes through a node using both left and right branches",
+        complexity: "O(n) time · O(h) space",
         code: `self.max_sum = float('-inf')
 
 def dfs(node):
@@ -905,6 +935,7 @@ return self.max_sum`
       {
         label: "Inorder Traversal (sorted order)",
         hint: "'inorder traversal of BST', 'sorted output from BST', 'convert BST to sorted array' — inorder = sorted for any BST",
+        complexity: "O(h) time · O(h) space",
         code: `result = []
 
 def inorder(node):
@@ -919,6 +950,7 @@ return result`
       {
         label: "Validate BST",
         hint: "'validate binary search tree', 'is this a valid BST' — every node must be within inherited min/max bounds from its ancestors",
+        complexity: "O(h) time · O(h) space",
         code: `def validate(node, min_val, max_val):
     if not node: return True
     # every node must be strictly between its inherited bounds
@@ -934,6 +966,7 @@ return validate(root, float('-inf'), float('inf'))`
       {
         label: "Search / Insert",
         hint: "'search in BST', 'insert into BST' — exploit sorted property to go left or right at each node instead of visiting both",
+        complexity: "O(h) time · O(h) space",
         code: `# Search — O(h) where h = height
 def search(node, target):
     if not node: return None          # not found
@@ -955,6 +988,7 @@ def insert(node, val):
       {
         label: "Kth Smallest",
         hint: "'kth smallest element in BST' — inorder gives sorted order, so the kth node visited = kth smallest",
+        complexity: "O(h) time · O(h) space",
         code: `self.k = k
 self.result = None
 
@@ -1011,6 +1045,7 @@ return self.result`
       {
         label: "Graph (shortest path)",
         hint: "'shortest path', 'minimum hops', 'word ladder', 'fewest steps between nodes' — input is edges/adjacency list",
+        complexity: "O(V+E) time · O(V) space",
         code: `from collections import deque
 queue = deque([start])
 visited = {start}  # track visited so we don't loop forever
@@ -1030,6 +1065,7 @@ while queue:
       {
         label: "Matrix / Grid",
         hint: "'shortest path in grid', 'minimum steps in matrix', 'rotting oranges', 'nearest 0' — input is a 2D grid",
+        complexity: "O(V+E) time · O(V) space",
         code: `from collections import deque
 directions = [(0,1),(0,-1),(1,0),(-1,0)]  # right, left, down, up
 queue = deque([(r0, c0)])
@@ -1052,6 +1088,7 @@ while queue:
       {
         label: "Tree Level Order",
         hint: "'level order traversal', 'nodes at each depth', 'right side view', 'average of levels' — answer depends on which level a node is on",
+        complexity: "O(V+E) time · O(V) space",
         code: `from collections import deque
 queue = deque([root])
 result = []
@@ -1108,6 +1145,7 @@ return result`
       {
         label: "Grid / Matrix",
         hint: "'number of islands', 'flood fill', 'count connected regions' — input is a 2D grid, just need to explore/count",
+        complexity: "O(V+E) time · O(V) space",
         code: `def dfs(r, c):
     # base cases: stop if out of bounds, already visited, or blocked cell
         return
@@ -1127,6 +1165,7 @@ for r in range(rows):
       {
         label: "Graph (adjacency list)",
         hint: "'number of provinces', 'friend circles', 'connected components' — input is a list of edges or adjacency list, not a grid",
+        complexity: "O(V+E) time · O(V) space",
         code: `visited = set()
 
 def dfs(node):
@@ -1182,6 +1221,7 @@ for node in graph:
       {
         label: "Build + DFS Traversal",
         hint: "'number of provinces', 'accounts merge', 'connected components from edge list' — input is pairs of connections, not a grid",
+        complexity: "O(V+E) time · O(V+E) space",
         code: `from collections import defaultdict
 graph = defaultdict(list)
 for a, b in edges:
@@ -1205,6 +1245,7 @@ for node in graph:
       {
         label: "Build + BFS Traversal",
         hint: "same as DFS version above, but use BFS when you ALSO need shortest path / distance between nodes in the same traversal",
+        complexity: "O(V+E) time · O(V+E) space",
         code: `from collections import defaultdict, deque
 graph = defaultdict(list)
 for a, b in edges:
@@ -1235,6 +1276,7 @@ for node in graph:
       {
         label: "Topological Sort (Course Schedule)",
         hint: "'course schedule', 'task ordering', 'prerequisites' — need a valid ordering where dependencies come first, detect cycle if impossible",
+        complexity: "O(V+E) time · O(V) space",
         code: `from collections import defaultdict, deque
 graph = defaultdict(list)
 indegree = defaultdict(int)  # how many prerequisites each course has
@@ -1261,6 +1303,7 @@ return order if len(order) == numCourses else []`
       {
         label: "Cycle Detection (Directed Graph)",
         hint: "'detect cycle in directed graph', 'can all courses be finished' — undirected cycle use Union Find instead, directed cycle use 3-color DFS",
+        complexity: "O(V+E) time · O(V) space",
         code: `# 3-color DFS: unvisited=0, in-progress=1, fully-done=2
 state = [0] * n
 
@@ -1318,6 +1361,7 @@ return any(dfs(i) for i in range(n) if state[i] == 0)`
       {
         label: "Core Template (DSU Class)",
         hint: "any problem where you need to dynamically merge groups and check membership — use this as your starting skeleton",
+        complexity: "O(α(n)) per op · O(n) space",
         code: `class DSU:
     def __init__(self, n):
         self.parent = list(range(n))  # each node starts as its own parent (its own group)
@@ -1351,6 +1395,7 @@ for u, v in edges:
       {
         label: "Detect Cycle (Redundant Connection)",
         hint: "'redundant connection', 'find the edge that creates a cycle in undirected graph' — if union returns False, that edge connects already-connected nodes",
+        complexity: "O(α(n)) per op · O(n) space",
         code: `class DSU:
     def __init__(self, n):
         self.parent = list(range(n))
@@ -1385,6 +1430,7 @@ class Solution:
       {
         label: "Count Connected Components",
         hint: "'number of connected components', 'how many separate groups' — count unique roots after all unions are done",
+        complexity: "O(α(n)) per op · O(n) space",
         code: `class DSU:
     def __init__(self, n):
         self.parent = list(range(n))
@@ -1464,6 +1510,7 @@ class Solution:
       {
         label: "Non-Grid (combinations / subsets)",
         hint: "'all subsets', 'all combinations', 'combination sum' — picking elements from a list, order doesn't matter",
+        complexity: "O(2^n) time",
         code: `result = []
 
 def backtrack(start, path):
@@ -1480,6 +1527,7 @@ return result`
       {
         label: "Non-Grid (permutations)",
         hint: "'all permutations', 'all arrangements' — same elements, different orderings, every element used exactly once",
+        complexity: "O(n!) time",
         code: `result = []
 
 def backtrack(path, used):
@@ -1500,6 +1548,7 @@ return result`
       {
         label: "Grid (Word Search)",
         hint: "'word search', 'find word in grid', 'path exists in matrix' — need to explore directions AND undo visits so other paths can reuse cells",
+        complexity: "O(m·n·4^L) time",
         code: `def backtrack(r, c, i):
     if i == len(word): return True   # matched all characters — found it
     if r < 0 or r >= rows or c < 0 or c >= cols:
@@ -1564,6 +1613,7 @@ return result`
       {
         label: "Top-Down (memoization)",
         hint: "recursion feels natural but has repeated subproblems — add @lru_cache to cache results and avoid recomputing",
+        complexity: "O(n) time · O(n) space",
         code: `from functools import lru_cache
 
 @lru_cache(maxsize=None)  # automatically caches results so each subproblem solved once
@@ -1576,6 +1626,7 @@ return dp(n)`
       {
         label: "Bottom-Up 1D Unbounded Knapsack (Coin Change)",
         hint: "'minimum coins', 'fewest steps', 'how many ways to make amount X', each item reusable — loop FORWARD so same item can be used multiple times",
+        complexity: "O(n·amount) time · O(amount) space",
         code: `# dp[i] = minimum coins needed to make amount i
 dp = [float('inf')] * (amount + 1)
 dp[0] = 0  # base case: 0 coins needed to make amount 0
@@ -1591,6 +1642,7 @@ return dp[amount] if dp[amount] != float('inf') else -1`
       {
         label: "Bottom-Up 1D 0/1 Knapsack (each item once)",
         hint: "'partition equal subset sum', 'can you reach target using each number once', 'subset sum' — each item used at most once, loop BACKWARD to prevent reuse",
+        complexity: "O(n·target) time · O(target) space",
         code: `# 0/1 Knapsack: each item can be used AT MOST ONCE
 # Key: loop BACKWARD so dp[cap - weight] reflects state WITHOUT current item
 # (if you looped forward, you'd reuse the same item multiple times)
@@ -1615,6 +1667,7 @@ return dp[target]
       {
         label: "Bottom-Up 2D (Unique Paths)",
         hint: "'unique paths in grid', 'number of ways to reach bottom-right' — answer at each cell depends on the cell above and to the left",
+        complexity: "O(m·n) time · O(m·n) space",
         code: `# dp[r][c] = number of ways to reach cell (r, c)
 dp = [[1] * n for _ in range(m)]
 # top row and left column are all 1 — only one way to reach them (straight line)
@@ -1648,6 +1701,7 @@ return dp[n - 1]  # dp[n-1] = dp[m-1][n-1]`
       {
         label: "Bottom-Up 2D Backwards (Space Optimized)",
         hint: "same as 2D unique paths but works backwards from bottom-right — useful when the problem naturally processes bottom-up",
+        complexity: "O(m·n) time · O(m·n) space",
         code: `# Full 2D version for reference:
 # dp[r][c] = paths from (r,c) to bottom-right
 # dp[r][c] = dp[r+1][c] + dp[r][c+1]   (go down or go right)
@@ -1679,6 +1733,7 @@ return row[0]  # dp[0][0] = total unique paths from top-left to bottom-right`
       {
         label: "Two-Choice per Step (House Robber)",
         hint: "'house robber', 'max sum no two adjacent', 'delete and earn' — at each position you choose to take it or skip it, can't take two in a row",
+        complexity: "O(n) to O(n²) time · O(n) space",
         code: `# dp[i] = max money robbing houses 0..i
 # at each house: either skip it (take dp[i-1]) or rob it (take dp[i-2] + nums[i])
 
@@ -1697,6 +1752,7 @@ return prev1  # prev1 holds the answer for the full array`
       {
         label: "Longest Increasing Subsequence",
         hint: "'longest increasing subsequence', 'longest chain', 'LIS' — elements don't have to be contiguous, just increasing",
+        complexity: "O(n) to O(n²) time · O(n) space",
         code: `# dp[i] = length of longest increasing subsequence ending at index i
 dp = [1] * len(nums)  # every element alone is a subsequence of length 1
 
@@ -1710,6 +1766,7 @@ return max(dp)  # best subsequence ending at any index`
       {
         label: "2D String DP (Wildcard Matching)",
         hint: "'wildcard matching', '* matches any sequence', 'does s match pattern p' — two strings, dp[i][j] = does s[:i] match p[:j]",
+        complexity: "O(m·n) time · O(m·n) space",
         code: `# dp[i][j] = True if s[:i] matches p[:j]
 m, n = len(s), len(p)
 dp = [[False] * (n + 1) for _ in range(m + 1)]
@@ -1760,6 +1817,7 @@ return prev[n]  # prev = dp[m], prev[n] = dp[m][n]`
       {
         label: "2D String DP (Regex Matching)",
         hint: "'regular expression matching', 'c* matches zero or more c', '.' matches any char — harder than wildcard because * pairs with the char before it",
+        complexity: "O(m·n) time · O(m·n) space",
         code: `# dp[i][j] = True if s[:i] matches p[:j]
 m, n = len(s), len(p)
 dp = [[False] * (n + 1) for _ in range(m + 1)]
@@ -1813,6 +1871,7 @@ return prev[n]  # prev = dp[m], prev[n] = dp[m][n]`
       {
         label: "2D String DP (Edit Distance)",
         hint: "'minimum edit distance', 'min operations to convert s to t', 'insert/delete/replace' — dp[i][j] = min ops to convert s[:i] to t[:j]",
+        complexity: "O(m·n) time · O(m·n) space",
         code: `m, n = len(s), len(t)
 # dp[i][j] = min operations to convert s[:i] into t[:j]
 dp = [[0] * (n + 1) for _ in range(m + 1)]
@@ -1860,6 +1919,7 @@ return prev[n]  # prev = dp[m], prev[n] = dp[m][n]`
       {
         label: "2D String DP (Longest Common Subsequence)",
         hint: "'longest common subsequence', 'LCS', 'minimum deletions to make strings equal' — dp[i][j] = LCS length of s[:i] and t[:j]",
+        complexity: "O(m·n) time · O(m·n) space",
         code: `m, n = len(s), len(t)
 # dp[i][j] = length of LCS of s[:i] and t[:j]
 dp = [[0] * (n + 1) for _ in range(m + 1)]
@@ -1939,6 +1999,7 @@ return prev[n]  # prev = dp[m], prev[n] = dp[m][n]`
       {
         label: "Jump Game (max reach)",
         hint: "'can you reach the end', 'minimum jumps to reach end' — track the farthest index reachable at each step",
+        complexity: "O(n log n) time · O(1) space",
         code: `# Greedy: at each position, update the farthest we can reach
 # If we ever can't reach the current position, return False
 
@@ -1954,6 +2015,7 @@ return True  # made it to the end`
       {
         label: "Task Scheduler",
         hint: "'task scheduler', 'minimum time to finish all tasks with cooldown' — most frequent task drives the minimum time",
+        complexity: "O(n log n) time · O(1) space",
         code: `from collections import Counter
 
 count = Counter(tasks)
@@ -1974,6 +2036,7 @@ return min_time`
       {
         label: "Gas Station",
         hint: "'gas station circular route', 'can complete the circuit' — if total gas >= total cost a solution exists; greedy finds the start",
+        complexity: "O(n log n) time · O(1) space",
         code: `total = 0   # total gas surplus across all stations
 tank  = 0   # current tank level
 start = 0   # candidate starting station
@@ -1994,6 +2057,7 @@ return start if total >= 0 else -1
       {
         label: "Greedy on Sorted Input (Generic)",
         hint: "problem becomes obvious once sorted — 'non-overlapping intervals', 'partition labels', 'assign cookies'",
+        complexity: "O(n log n) time · O(1) space",
         code: `# Most greedy problems on arrays start with sorting
 # Then make the locally optimal choice at each step
 
@@ -2050,6 +2114,7 @@ return count`
       {
         label: "Merge Intervals",
         hint: "'merge all overlapping intervals', 'merge intervals' — sort by start, then greedily extend the current interval if it overlaps",
+        complexity: "O(n log n) time · O(n) space",
         code: `intervals.sort(key=lambda x: x[0])  # sort by start time
 
 merged = [intervals[0]]  # start with first interval
@@ -2069,6 +2134,7 @@ return merged`
       {
         label: "Insert Interval",
         hint: "'insert new interval and merge', 'add interval to sorted list' — add all non-overlapping before, merge overlapping, add rest",
+        complexity: "O(n log n) time · O(n) space",
         code: `result = []
 i = 0
 n = len(intervals)
@@ -2095,6 +2161,7 @@ return result`
       {
         label: "Insert Interval (One-Pass Single Loop)",
         hint: "same problem as above, but collapses all 3 phases into a single loop with early return — fewer lines, same correctness",
+        complexity: "O(n log n) time · O(n) space",
         code: `res = []
 
 for i in range(len(intervals)):
@@ -2122,6 +2189,7 @@ return res`
       {
         label: "Meeting Rooms I (can attend all?)",
         hint: "'can one person attend all meetings', 'no overlap check' — just check if any two intervals overlap after sorting",
+        complexity: "O(n log n) time · O(n) space",
         code: `intervals.sort(key=lambda x: x[0])  # sort by start time
 
 for i in range(1, len(intervals)):
@@ -2134,6 +2202,7 @@ return True  # no overlaps found`
       {
         label: "Meeting Rooms II (min rooms needed)",
         hint: "'minimum conference rooms', 'minimum rooms required', 'how many people at peak' — use heap of end times to track rooms in use",
+        complexity: "O(n log n) time · O(n) space",
         code: `import heapq
 
 intervals.sort(key=lambda x: x[0])  # sort by start time
@@ -2153,6 +2222,7 @@ return len(heap)  # total rooms open = minimum needed`
       {
         label: "Non-overlapping Intervals (min removals)",
         hint: "'minimum number of intervals to remove', 'maximum non-overlapping intervals' — sort by end time, greedily keep intervals that end earliest",
+        complexity: "O(n log n) time · O(n) space",
         code: `intervals.sort(key=lambda x: x[1])  # sort by END time (not start!)
 # sorting by end gives the greedy choice: keep whatever finishes earliest
 
@@ -2209,6 +2279,7 @@ return len(intervals) - count`
       {
         label: "Valid Parentheses / Matching Pairs",
         hint: "'valid parentheses', 'balanced brackets', 'matching pairs' — push open brackets, pop and check on close",
+        complexity: "O(n) time · O(n) space",
         code: `stack = []
 mapping = {')': '(', '}': '{', ']': '['}
 
@@ -2225,6 +2296,7 @@ return len(stack) == 0  # valid only if all brackets were matched`
       {
         label: "Decode String / Nested Structure",
         hint: "'decode string', 'nested encoding', 'evaluate nested expressions' — stack unwinds inner results before combining with outer",
+        complexity: "O(n) time · O(n) space",
         code: `stack = []
 curr_str = ""
 curr_num = 0
@@ -2247,6 +2319,7 @@ return curr_str`
       {
         label: "Min Stack (track min at each state)",
         hint: "'min stack', 'get minimum in O(1)', 'stack that supports getMin' — store (value, current_min) pairs so min is always known",
+        complexity: "O(n) time · O(n) space",
         code: `stack = []  # stores (value, min_so_far) pairs
 
 def push(val):
@@ -2304,6 +2377,7 @@ def getMin():
       {
         label: "Fast / Slow Pointers (Floyd's)",
         hint: "'cycle detection', 'find middle of linked list', 'linked list cycle' — slow moves 1 step, fast moves 2, they meet if cycle exists",
+        complexity: "O(n) time · O(1) space",
         code: `slow = head
 fast = head
 
@@ -2323,6 +2397,7 @@ return False  # fast reached end — no cycle
       {
         label: "Reverse Linked List",
         hint: "'reverse linked list', 'reverse a portion of list' — iteratively reassign next pointers using three pointers",
+        complexity: "O(n) time · O(1) space",
         code: `prev = None
 curr = head
 
@@ -2337,6 +2412,7 @@ return prev  # prev is now the new head`
       {
         label: "Dummy Node (Merge / Delete)",
         hint: "'merge two sorted lists', 'delete nth from end', 'remove duplicates from list' — dummy node avoids edge cases on the head",
+        complexity: "O(n) time · O(1) space",
         code: `dummy = ListNode(0)   # dummy node before the real head
 dummy.next = head     # avoids special-casing when head itself changes
 curr = dummy
@@ -2358,6 +2434,7 @@ return dummy.next  # skip dummy to get real head`
       {
         label: "Nth From End (Two Pointer Gap)",
         hint: "'remove nth node from end', 'kth from end' — move fast pointer n steps ahead, then move both until fast hits end",
+        complexity: "O(n) time · O(1) space",
         code: `dummy = ListNode(0)
 dummy.next = head
 fast = dummy
@@ -2419,6 +2496,7 @@ return dummy.next`
       {
         label: "Fast and Slow (Cycle Detection for Math)",
         hint: "'happy number', 'detect cycle in sequence' — if a sequence loops, slow and fast pointers will meet",
+        complexity: "O(log n) or O(1) time",
         code: `def isHappy(n):
     def get_next(n):
         total = 0
@@ -2439,6 +2517,7 @@ return dummy.next`
       {
         label: "Pow(x, n) — Fast Exponentiation",
         hint: "'implement pow', 'x to the power n', 'fast power' — halve the exponent each step, O(log n)",
+        complexity: "O(log n) time · O(1) space",
         code: `def myPow(x, n):
     if n < 0:
         x = 1 / x   # negative exponent = reciprocal
@@ -2457,6 +2536,7 @@ return dummy.next`
       {
         label: "GCD / LCM",
         hint: "'greatest common divisor', 'least common multiple', 'simplify fraction' — Euclidean algorithm",
+        complexity: "O(log(min(a,b))) time",
         code: `def gcd(a, b):
     while b:
         a, b = b, a % b  # remainder replaces larger number
@@ -2469,6 +2549,7 @@ def lcm(a, b):
       {
         label: "Missing Number / Math Trick",
         hint: "'find missing number in range 0 to n', 'O(1) space' — use sum formula or XOR instead of a set",
+        complexity: "O(log n) or O(1) time",
         code: `def missingNumber(nums):
     n = len(nums)
 
@@ -2525,6 +2606,7 @@ def lcm(a, b):
       {
         label: "XOR Trick (find unique number)",
         hint: "'single number', 'find the element that appears once while others appear twice' — XOR cancels pairs",
+        complexity: "O(n) time · O(1) space",
         code: `def singleNumber(nums):
     result = 0
     for num in nums:
@@ -2540,6 +2622,7 @@ def lcm(a, b):
       {
         label: "Power of 2 Check",
         hint: "'is power of 2', 'is n a power of 2' — power of 2 has exactly one bit set",
+        complexity: "O(n) time · O(1) space",
         code: `def isPowerOfTwo(n):
     if n <= 0: return False
     return n & (n - 1) == 0
@@ -2560,6 +2643,7 @@ def countBits(n):
       {
         label: "Bitmask Subsets",
         hint: "'generate all subsets', 'enumerate all combinations using bits' — each bit represents include/exclude",
+        complexity: "O(n·2^n) time",
         code: `def subsets(nums):
     n = len(nums)
     result = []
@@ -2578,6 +2662,7 @@ def countBits(n):
       {
         label: "Bit Shift Operations",
         hint: "'multiply/divide by 2', 'divide two integers without operators', 'mid without overflow'",
+        complexity: "O(n) time · O(1) space",
         code: `# Left shift = multiply by 2
 x << 1   # x * 2
 x << 2   # x * 4
@@ -2640,6 +2725,7 @@ n & ~(1 << i)`
       {
         label: "1D Range Sum Query",
         hint: "'range sum query', 'sum between indices i and j', multiple sum queries on same array",
+        complexity: "O(n) precompute · O(1) query",
         code: `# Build prefix sum array — O(n) once, then each query is O(1)
 # prefix[i] = sum of nums[0..i-1]  (1-indexed, prefix[0] = 0)
 
@@ -2660,6 +2746,7 @@ def range_sum(i, j):
       {
         label: "Subarray Sum Equals K (Prefix + HashMap)",
         hint: "'number of subarrays with sum equal to k', 'count subarrays with target sum' — prefix sum + hashmap to find complement",
+        complexity: "O(n) time · O(n) space",
         code: `from collections import defaultdict
 
 def subarraySum(nums, k):
@@ -2682,6 +2769,7 @@ def subarraySum(nums, k):
       {
         label: "Product of Array Except Self",
         hint: "'product of array except self', 'no division allowed' — prefix product from left + suffix product from right",
+        complexity: "O(n) time · O(1) extra space",
         code: `def productExceptSelf(nums):
     n = len(nums)
     result = [1] * n
@@ -2703,6 +2791,7 @@ def subarraySum(nums, k):
       {
         label: "2D Prefix Sum (Grid Range Query)",
         hint: "'sum of rectangle subgrid', 'range sum in 2D matrix', multiple sum queries on a grid",
+        complexity: "O(m·n) precompute · O(1) query",
         code: `# Build 2D prefix sum — O(m*n) once, each query O(1)
 # prefix[r][c] = sum of rectangle from (0,0) to (r-1, c-1)
 
@@ -2869,13 +2958,16 @@ export default function DSAPatterns() {
   const [templateIdx, setTemplateIdx] = useState(0);
   const [showDetail, setShowDetail] = useState(false);
   const [showConstraints, setShowConstraints] = useState(false);
-
-  const [isMobile, setIsMobile] = useState(
-    typeof window !== "undefined" && window.innerWidth < 700
-  );
-  const [isLandscape, setIsLandscape] = useState(
-    typeof window !== "undefined" && window.innerWidth > window.innerHeight
-  );
+  const [viewMode, setViewMode] = useState("normal"); // normal | quickref | quiz | print
+  const [copiedLabel, setCopiedLabel] = useState(null);
+  const [collapsedGroups, setCollapsedGroups] = useState(new Set());
+  const [reviewed, setReviewed] = useState(new Set());
+  const [quizIdx, setQuizIdx] = useState(0);
+  const [quizRevealed, setQuizRevealed] = useState(false);
+  const [quizGuess, setQuizGuess] = useState(null);
+  const [quizScore, setQuizScore] = useState({ correct: 0, total: 0 });
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" && window.innerWidth < 700);
+  const [isLandscape, setIsLandscape] = useState(typeof window !== "undefined" && window.innerWidth > window.innerHeight);
 
   useEffect(() => {
     const handleResize = () => {
@@ -2886,6 +2978,136 @@ export default function DSAPatterns() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.target.tagName === "INPUT") return;
+      if (e.key === "j" || e.key === "ArrowDown") {
+        setSelected(prev => {
+          if (!prev) return patterns[0];
+          const idx = patterns.findIndex(p => p.name === prev.name);
+          return patterns[Math.min(idx + 1, patterns.length - 1)];
+        });
+        setTab("keywords"); setTemplateIdx(0); setShowDetail(true);
+      }
+      if (e.key === "k" || e.key === "ArrowUp") {
+        setSelected(prev => {
+          if (!prev) return patterns[0];
+          const idx = patterns.findIndex(p => p.name === prev.name);
+          return patterns[Math.max(idx - 1, 0)];
+        });
+        setTab("keywords"); setTemplateIdx(0); setShowDetail(true);
+      }
+      if (e.key === "1") setTab("keywords");
+      if (e.key === "2") setTab("tells");
+      if (e.key === "3") setTab("approach");
+      if (e.key === "4") setTab("input");
+      if (e.key === "5") setTab("vs");
+      if (e.key === "6") setTab("template");
+      if (e.key === "Escape") { setShowDetail(false); setSelected(null); }
+      if (e.key === "r" && selected) {
+        setReviewed(prev => {
+          const next = new Set(prev);
+          next.has(selected.name) ? next.delete(selected.name) : next.add(selected.name);
+          return next;
+        });
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [selected]);
+
+  // Syntax highlighting for Python
+  const highlightCode = (code) => {
+    const keywords = /\b(def|class|return|if|elif|else|for|while|in|not|and|or|import|from|True|False|None|with|as|pass|break|continue|lambda|yield|self)\b/g;
+    const builtins = /\b(len|range|print|list|dict|set|tuple|int|str|float|bool|max|min|sum|sorted|enumerate|zip|map|filter|any|all|append|pop|push|get|defaultdict|Counter|deque|heapq|bisect|abs|divmod|ord|chr)\b/g;
+    const strings = /(["'`])(?:(?!\1)[^\\]|\\.)*\1/g;
+    const comments = /#.*/g;
+    const numbers = /\b\d+\.?\d*\b/g;
+
+    const lines = code.split('\n');
+    return lines.map((line, li) => {
+      // parse line into tokens
+      const parts = [];
+      let remaining = line;
+      let offset = 0;
+
+      // find comment position
+      const commentMatch = line.match(/#/);
+      const commentStart = commentMatch ? line.indexOf('#') : -1;
+
+      // tokenize non-comment part
+      const codePart = commentStart >= 0 ? line.slice(0, commentStart) : line;
+      const commentPart = commentStart >= 0 ? line.slice(commentStart) : null;
+
+      // simple token scanner
+      let i = 0;
+      let result = [];
+      const tokens = [];
+
+      // collect string ranges
+      const strRanges = [];
+      let sr;
+      const strRegex = /(["'])(?:(?!\1)[^\\]|\\.)*\1/g;
+      while ((sr = strRegex.exec(codePart)) !== null) {
+        strRanges.push([sr.index, sr.index + sr[0].length, sr[0]]);
+      }
+
+      let pos = 0;
+      const addText = (text, color) => { if (text) result.push(<span key={result.length} style={{ color }}>{text}</span>); };
+
+      const kwSet = new Set(['def','class','return','if','elif','else','for','while','in','not','and','or','import','from','True','False','None','with','as','pass','break','continue','lambda','yield','self']);
+      const builtinSet = new Set(['len','range','print','list','dict','set','tuple','int','str','float','bool','max','min','sum','sorted','enumerate','zip','map','filter','any','all','append','pop','get','defaultdict','Counter','deque','heapq','bisect','abs','divmod','ord','chr']);
+
+      let inStr = false;
+      let strChar = '';
+      let buf = '';
+      let charIdx = 0;
+
+      while (charIdx < codePart.length) {
+        const ch = codePart[charIdx];
+        // check if we're starting a string
+        const strRange = strRanges.find(([s,e]) => s === charIdx);
+        if (strRange) {
+          // flush buffer
+          if (buf) { flushBuf(buf, result, kwSet, builtinSet); buf = ''; }
+          result.push(<span key={result.length} style={{ color: '#e17055' }}>{strRange[2]}</span>);
+          charIdx = strRange[1];
+          continue;
+        }
+        // word char
+        if (/\w/.test(ch)) {
+          buf += ch;
+        } else {
+          if (buf) { flushBuf(buf, result, kwSet, builtinSet); buf = ''; }
+          // operators, punctuation
+          const opColor = /[+\-*/%=<>!&|^~]/.test(ch) ? '#74b9ff' : '#ccc';
+          result.push(<span key={result.length} style={{ color: /[()[\]{},.:;]/.test(ch) ? '#888' : opColor }}>{ch}</span>);
+        }
+        charIdx++;
+      }
+      if (buf) { flushBuf(buf, result, kwSet, builtinSet); buf = ''; }
+      if (commentPart) result.push(<span key={result.length} style={{ color: '#6c6c6c', fontStyle: 'italic' }}>{commentPart}</span>);
+
+      return <div key={li}>{result}{'\n'}</div>;
+    });
+  };
+
+  function flushBuf(buf, result, kwSet, builtinSet) {
+    let color = '#b0c4de';
+    if (kwSet.has(buf)) color = '#74b9ff';
+    else if (builtinSet.has(buf)) color = '#a29bfe';
+    else if (/^\d/.test(buf)) color = '#fdcb6e';
+    result.push(<span key={result.length} style={{ color }}>{buf}</span>);
+  }
+
+  const copyCode = (code, label) => {
+    navigator.clipboard.writeText(code).then(() => {
+      setCopiedLabel(label);
+      setTimeout(() => setCopiedLabel(null), 2000);
+    });
+  };
+
   const filtered = patterns.filter(p => {
     const q = search.toLowerCase();
     return (
@@ -2893,10 +3115,7 @@ export default function DSAPatterns() {
       p.keywords.some(k => k.toLowerCase().includes(q)) ||
       p.tells.some(t => t.toLowerCase().includes(q)) ||
       p.example.toLowerCase().includes(q) ||
-      p.templates.some(t =>
-        t.label.toLowerCase().includes(q) ||
-        (t.hint && t.hint.toLowerCase().includes(q))
-      )
+      p.templates.some(t => t.label.toLowerCase().includes(q) || (t.hint && t.hint.toLowerCase().includes(q)))
     );
   });
 
@@ -2909,38 +3128,253 @@ export default function DSAPatterns() {
     setShowDetail(true);
   };
 
+  const toggleGroup = (label) => {
+    setCollapsedGroups(prev => {
+      const next = new Set(prev);
+      next.has(label) ? next.delete(label) : next.add(label);
+      return next;
+    });
+  };
+
+  const toggleReviewed = (name) => {
+    setReviewed(prev => {
+      const next = new Set(prev);
+      next.has(name) ? next.delete(name) : next.add(name);
+      return next;
+    });
+  };
+
+  // Quiz mode
+  const quizPattern = patterns[quizIdx % patterns.length];
+  const handleQuizGuess = (guess) => {
+    if (quizRevealed) return;
+    setQuizGuess(guess);
+    setQuizRevealed(true);
+    setQuizScore(prev => ({
+      correct: prev.correct + (guess === quizPattern.name ? 1 : 0),
+      total: prev.total + 1
+    }));
+  };
+  const nextQuiz = () => {
+    setQuizIdx(prev => (prev + 1) % patterns.length);
+    setQuizRevealed(false);
+    setQuizGuess(null);
+  };
+
+  // Code block with copy + highlight
+  const CodeBlock = ({ code, label, color }) => (
+    <div style={{ position: "relative" }}>
+      <button
+        onClick={() => copyCode(code, label)}
+        style={{
+          position: "absolute",
+          top: 10,
+          right: 10,
+          background: copiedLabel === label ? "#26de81" : "#1e1e1e",
+          border: `1px solid ${copiedLabel === label ? "#26de81" : "#333"}`,
+          borderRadius: 4,
+          color: copiedLabel === label ? "#000" : "#888",
+          fontFamily: "inherit",
+          fontSize: 11,
+          fontWeight: 700,
+          padding: "4px 10px",
+          cursor: "pointer",
+          zIndex: 2,
+          transition: "all 0.2s",
+        }}
+      >
+        {copiedLabel === label ? "✓ Copied!" : "Copy"}
+      </button>
+      <pre style={{
+        margin: 0,
+        padding: "20px 20px 20px 20px",
+        fontSize: isMobile ? 11 : 13,
+        lineHeight: 1.8,
+        overflowX: "auto",
+        whiteSpace: "pre",
+        background: "transparent",
+      }}>
+        {highlightCode(code)}
+      </pre>
+    </div>
+  );
+
+  // Quick Reference view
+  const quickRefView = (
+    <div style={{ padding: "20px 24px", overflowY: "auto", height: "calc(100vh - 100px)" }}>
+      <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, textTransform: "uppercase", marginBottom: 16 }}>
+        {patterns.length} patterns — click any to open
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
+        {patterns.map(pat => (
+          <div
+            key={pat.name}
+            onClick={() => { selectPattern(pat); setViewMode("normal"); }}
+            style={{
+              background: "#111",
+              border: `1px solid ${pat.color}33`,
+              borderLeft: `3px solid ${pat.color}`,
+              borderRadius: 8,
+              padding: "12px 16px",
+              cursor: "pointer",
+              transition: "all 0.15s",
+              position: "relative",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+              <div style={{ width: 8, height: 8, borderRadius: "50%", background: pat.color, flexShrink: 0 }} />
+              <div style={{ fontSize: 14, fontWeight: 700, color: pat.color }}>{pat.name}</div>
+              {reviewed.has(pat.name) && (
+                <span style={{ marginLeft: "auto", color: "#26de81", fontSize: 14 }}>✓</span>
+              )}
+            </div>
+            {pat.constraint && (
+              <div style={{ fontSize: 11, color: "#555", marginBottom: 6 }}>{pat.constraint.label}</div>
+            )}
+            <div style={{ fontSize: 12, color: "#555", lineHeight: 1.5 }}>
+              {pat.keywords.slice(0, 4).join(" · ")}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  // Quiz view
+  const quizView = (
+    <div style={{ padding: "24px", maxWidth: 700, margin: "0 auto", overflowY: "auto", height: "calc(100vh - 100px)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+        <div style={{ fontSize: 14, color: "#555" }}>
+          Pattern <span style={{ color: "#fff" }}>{(quizIdx % patterns.length) + 1}</span> / {patterns.length}
+        </div>
+        <div style={{ fontSize: 14 }}>
+          Score: <span style={{ color: "#26de81", fontWeight: 700 }}>{quizScore.correct}</span>
+          <span style={{ color: "#555" }}> / {quizScore.total}</span>
+        </div>
+      </div>
+
+      {/* Question */}
+      <div style={{ background: "#111", border: "1px solid #1e1e1e", borderRadius: 10, padding: 24, marginBottom: 20 }}>
+        <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, textTransform: "uppercase", marginBottom: 16 }}>
+          Which pattern is this?
+        </div>
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ fontSize: 11, color: "#888", marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>Keywords</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {quizPattern.keywords.slice(0, 6).map(k => (
+              <span key={k} style={{ background: "#1a1a1a", border: "1px solid #2a2a2a", color: "#ccc", padding: "4px 10px", borderRadius: 20, fontSize: 13 }}>
+                {k}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div>
+          <div style={{ fontSize: 11, color: "#888", marginBottom: 8, textTransform: "uppercase", letterSpacing: 1 }}>Tells</div>
+          {quizPattern.tells.slice(0, 3).map((t, i) => (
+            <div key={i} style={{ fontSize: 13, color: "#aaa", padding: "4px 0", borderBottom: "1px solid #1a1a1a" }}>• {t}</div>
+          ))}
+        </div>
+      </div>
+
+      {/* Options - shuffled subset of patterns */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
+        {[quizPattern, ...patterns.filter(p => p.name !== quizPattern.name).sort(() => Math.random() - 0.5).slice(0, 5)]
+          .sort(() => Math.random() - 0.5)
+          .map(opt => {
+            let bg = "#111", border = "#2a2a2a", color = "#ccc";
+            if (quizRevealed) {
+              if (opt.name === quizPattern.name) { bg = "#26de8122"; border = "#26de81"; color = "#26de81"; }
+              else if (opt.name === quizGuess) { bg = "#FC5C6522"; border = "#FC5C65"; color = "#FC5C65"; }
+            }
+            return (
+              <button
+                key={opt.name}
+                onClick={() => handleQuizGuess(opt.name)}
+                style={{
+                  background: bg, border: `1px solid ${border}`, borderRadius: 8,
+                  color, fontFamily: "inherit", fontSize: 13, fontWeight: 600,
+                  padding: "12px 16px", cursor: quizRevealed ? "default" : "pointer",
+                  textAlign: "left", transition: "all 0.2s",
+                }}
+              >
+                {opt.name}
+              </button>
+            );
+          })}
+      </div>
+
+      {/* Reveal + Next */}
+      {!quizRevealed ? (
+        <button
+          onClick={() => { setQuizRevealed(true); setQuizGuess(null); setQuizScore(prev => ({ ...prev, total: prev.total + 1 })); }}
+          style={{ background: "#1a1a1a", border: "1px solid #2a2a2a", borderRadius: 8, color: "#888", fontFamily: "inherit", fontSize: 13, padding: "10px 20px", cursor: "pointer", width: "100%" }}
+        >
+          Skip / Reveal
+        </button>
+      ) : (
+        <div>
+          <div style={{ background: `${quizPattern.color}18`, border: `1px solid ${quizPattern.color}44`, borderRadius: 8, padding: 16, marginBottom: 12 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: quizPattern.color, marginBottom: 6 }}>
+              {quizGuess === quizPattern.name ? "✓ Correct!" : `✗ Answer: ${quizPattern.name}`}
+            </div>
+            <div style={{ fontSize: 12, color: "#aaa" }}>e.g. {quizPattern.example}</div>
+          </div>
+          <div style={{ display: "flex", gap: 10 }}>
+            <button
+              onClick={() => { selectPattern(quizPattern); setViewMode("normal"); }}
+              style={{ flex: 1, background: "#1a1a1a", border: "1px solid #2a2a2a", borderRadius: 8, color: "#aaa", fontFamily: "inherit", fontSize: 13, padding: "10px", cursor: "pointer" }}
+            >
+              Study this pattern →
+            </button>
+            <button
+              onClick={nextQuiz}
+              style={{ flex: 1, background: quizPattern.color, border: "none", borderRadius: 8, color: "#000", fontFamily: "inherit", fontSize: 13, fontWeight: 700, padding: "10px", cursor: "pointer" }}
+            >
+              Next Question →
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  // Detail panel
   const detailPanel = p ? (
     <div>
       {/* Pattern header */}
-      <div style={{
-        background: "#111",
-        border: `1px solid ${p.color}22`,
-        borderRadius: 10,
-        padding: "20px 24px",
-        marginBottom: 16,
-      }}>
+      <div style={{ background: "#111", border: `1px solid ${p.color}22`, borderRadius: 10, padding: "20px 24px", marginBottom: 16 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8, flexWrap: "wrap" }}>
           <div style={{ width: 10, height: 10, borderRadius: "50%", background: p.color, flexShrink: 0 }} />
           <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#fff" }}>{p.name}</h2>
-          {/* Constraint badge */}
           {p.constraint && (
-            <span style={{
-              background: `${p.constraint.color}18`,
-              border: `1px solid ${p.constraint.color}44`,
-              color: p.constraint.color,
-              padding: "2px 10px",
-              borderRadius: 20,
-              fontSize: 13,
-              fontWeight: 700,
-            }}>{p.constraint.label}</span>
+            <span style={{ background: `${p.constraint.color}18`, border: `1px solid ${p.constraint.color}44`, color: p.constraint.color, padding: "2px 10px", borderRadius: 20, fontSize: 11, fontWeight: 700 }}>
+              {p.constraint.label}
+            </span>
           )}
+          <button
+            onClick={() => toggleReviewed(p.name)}
+            style={{
+              marginLeft: "auto",
+              background: reviewed.has(p.name) ? "#26de8122" : "#1a1a1a",
+              border: `1px solid ${reviewed.has(p.name) ? "#26de81" : "#2a2a2a"}`,
+              borderRadius: 6,
+              color: reviewed.has(p.name) ? "#26de81" : "#555",
+              fontFamily: "inherit",
+              fontSize: 11,
+              fontWeight: 700,
+              padding: "4px 10px",
+              cursor: "pointer",
+            }}
+          >
+            {reviewed.has(p.name) ? "✓ Reviewed" : "Mark Reviewed"}
+          </button>
         </div>
         <div style={{ fontSize: 12, color: "#555" }}>e.g. {p.example}</div>
       </div>
 
       {/* Tabs */}
       <div style={{ display: "flex", gap: 4, marginBottom: 16, flexWrap: "wrap" }}>
-        {["keywords", "tells", "approach", "input", "vs", "template"].map(t => (
+        {["keywords", "tells", "approach", "input", "vs", "template"].map((t, i) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -2950,16 +3384,18 @@ export default function DSAPatterns() {
               border: "none",
               cursor: "pointer",
               fontFamily: "inherit",
-              fontSize: 13,
+              fontSize: 11,
               fontWeight: 600,
               textTransform: "uppercase",
               letterSpacing: 1,
               background: tab === t ? p.color : "#1a1a1a",
               color: tab === t ? "#000" : "#666",
               transition: "all 0.15s",
+              position: "relative",
             }}
           >
             {t}
+            <span style={{ position: "absolute", top: -6, right: -4, fontSize: 9, color: "#444", fontWeight: 400 }}>{i + 1}</span>
           </button>
         ))}
       </div>
@@ -2967,20 +3403,10 @@ export default function DSAPatterns() {
       {/* Keywords */}
       {tab === "keywords" && (
         <div style={{ background: "#111", border: "1px solid #1e1e1e", borderRadius: 10, padding: 24 }}>
-          <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, textTransform: "uppercase", marginBottom: 16 }}>
-            Words that signal this pattern
-          </div>
+          <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, textTransform: "uppercase", marginBottom: 16 }}>Words that signal this pattern</div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
             {p.keywords.map(k => (
-              <span key={k} style={{
-                background: `${p.color}18`,
-                border: `1px solid ${p.color}44`,
-                color: p.color,
-                padding: "6px 14px",
-                borderRadius: 20,
-                fontSize: 15,
-                fontWeight: 500,
-              }}>
+              <span key={k} style={{ background: `${p.color}18`, border: `1px solid ${p.color}44`, color: p.color, padding: "6px 14px", borderRadius: 20, fontSize: 13, fontWeight: 500 }}>
                 {k}
               </span>
             ))}
@@ -2991,20 +3417,10 @@ export default function DSAPatterns() {
       {/* Tells */}
       {tab === "tells" && (
         <div style={{ background: "#111", border: "1px solid #1e1e1e", borderRadius: 10, padding: 24 }}>
-          <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, textTransform: "uppercase", marginBottom: 16 }}>
-            When to use this pattern
-          </div>
+          <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, textTransform: "uppercase", marginBottom: 16 }}>When to use this pattern</div>
           {p.tells.map((t, i) => (
-            <div key={i} style={{
-              display: "flex",
-              alignItems: "flex-start",
-              gap: 14,
-              padding: "12px 0",
-              borderBottom: i < p.tells.length - 1 ? "1px solid #1a1a1a" : "none",
-            }}>
-              <span style={{ color: p.color, fontWeight: 700, fontSize: 13, flexShrink: 0 }}>
-                {String(i + 1).padStart(2, "0")}
-              </span>
+            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 14, padding: "12px 0", borderBottom: i < p.tells.length - 1 ? "1px solid #1a1a1a" : "none" }}>
+              <span style={{ color: p.color, fontWeight: 700, fontSize: 13, flexShrink: 0 }}>{String(i + 1).padStart(2, "0")}</span>
               <span style={{ fontSize: 14, color: "#ccc", lineHeight: 1.6 }}>{t}</span>
             </div>
           ))}
@@ -3014,31 +3430,10 @@ export default function DSAPatterns() {
       {/* Approach */}
       {tab === "approach" && (
         <div style={{ background: "#111", border: "1px solid #1e1e1e", borderRadius: 10, overflow: "hidden" }}>
-          <div style={{ padding: "12px 18px", borderBottom: "1px solid #1e1e1e", fontSize: 11, color: "#555", letterSpacing: 2, textTransform: "uppercase" }}>
-            Step-by-step approach
-          </div>
+          <div style={{ padding: "12px 18px", borderBottom: "1px solid #1e1e1e", fontSize: 11, color: "#555", letterSpacing: 2, textTransform: "uppercase" }}>Step-by-step approach</div>
           {(p.approach || ["No approach steps defined yet."]).map((step, i) => (
-            <div key={i} style={{
-              display: "flex",
-              alignItems: "flex-start",
-              gap: 16,
-              padding: "14px 20px",
-              borderBottom: i < (p.approach || []).length - 1 ? "1px solid #1a1a1a" : "none",
-            }}>
-              <div style={{
-                width: 28,
-                height: 28,
-                borderRadius: "50%",
-                background: `${p.color}22`,
-                border: `1px solid ${p.color}55`,
-                color: p.color,
-                fontWeight: 700,
-                fontSize: 13,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}>
+            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 16, padding: "14px 20px", borderBottom: i < (p.approach || []).length - 1 ? "1px solid #1a1a1a" : "none" }}>
+              <div style={{ width: 28, height: 28, borderRadius: "50%", background: `${p.color}22`, border: `1px solid ${p.color}55`, color: p.color, fontWeight: 700, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                 {i + 1}
               </div>
               <div style={{ fontSize: 14, color: "#ccc", lineHeight: 1.7, paddingTop: 4 }}>{step}</div>
@@ -3049,53 +3444,29 @@ export default function DSAPatterns() {
 
       {/* Input Types */}
       {tab === "input" && (() => {
-        const matches = inputTypes.filter(it =>
-          it.routes.some(r => r.pattern === p.name)
-        );
+        const matches = inputTypes.filter(it => it.routes.some(r => r.pattern === p.name));
         return (
           <div style={{ background: "#111", border: "1px solid #1e1e1e", borderRadius: 10, overflow: "hidden" }}>
-            <div style={{ padding: "12px 18px", borderBottom: "1px solid #1e1e1e", fontSize: 11, color: "#555", letterSpacing: 2, textTransform: "uppercase" }}>
-              Which input types lead to this pattern
-            </div>
+            <div style={{ padding: "12px 18px", borderBottom: "1px solid #1e1e1e", fontSize: 11, color: "#555", letterSpacing: 2, textTransform: "uppercase" }}>Which input types lead to this pattern</div>
             {matches.length === 0 ? (
               <div style={{ padding: 24, color: "#444", fontSize: 13 }}>No input type mappings found for this pattern.</div>
-            ) : (
-              matches.map((it, idx) => {
-                const relevantRoutes = it.routes.filter(r => r.pattern === p.name);
-                return (
-                  <div key={it.type} style={{
-                    borderBottom: idx < matches.length - 1 ? "1px solid #1a1a1a" : "none",
-                  }}>
-                    {/* Input type header */}
-                    <div style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      padding: "12px 18px 8px",
-                      background: `${it.color}0d`,
-                    }}>
-                      <span style={{ fontFamily: "monospace", fontSize: 13, color: it.color, fontWeight: 700 }}>{it.icon}</span>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: it.color }}>{it.type}</span>
-                    </div>
-                    {/* Conditions that route here */}
-                    {relevantRoutes.map((r, i) => (
-                      <div key={i} style={{
-                        padding: "8px 18px 8px 40px",
-                        borderTop: "1px solid #111",
-                        fontSize: 14,
-                        color: "#aaa",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 8,
-                      }}>
-                        <span style={{ color: p.color, fontWeight: 700, flexShrink: 0 }}>→</span>
-                        <span><span style={{ color: "#555" }}>when </span>{r.condition}</span>
-                      </div>
-                    ))}
+            ) : matches.map((it, idx) => {
+              const relevantRoutes = it.routes.filter(r => r.pattern === p.name);
+              return (
+                <div key={it.type} style={{ borderBottom: idx < matches.length - 1 ? "1px solid #1a1a1a" : "none" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 18px 8px", background: `${it.color}0d` }}>
+                    <span style={{ fontFamily: "monospace", fontSize: 13, color: it.color, fontWeight: 700 }}>{it.icon}</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: it.color }}>{it.type}</span>
                   </div>
-                );
-              })
-            )}
+                  {relevantRoutes.map((r, i) => (
+                    <div key={i} style={{ padding: "8px 18px 8px 40px", borderTop: "1px solid #111", fontSize: 12, color: "#aaa", display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ color: p.color, fontWeight: 700, flexShrink: 0 }}>→</span>
+                      <span><span style={{ color: "#555" }}>when </span>{r.condition}</span>
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
           </div>
         );
       })()}
@@ -3103,35 +3474,25 @@ export default function DSAPatterns() {
       {/* VS */}
       {tab === "vs" && (
         <div style={{ background: "#111", border: "1px solid #1e1e1e", borderRadius: 10, padding: 24 }}>
-          <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, textTransform: "uppercase", marginBottom: 16 }}>
-            Commonly confused with
-          </div>
+          <div style={{ fontSize: 11, color: "#555", letterSpacing: 2, textTransform: "uppercase", marginBottom: 16 }}>Commonly confused with</div>
           {p.confusables.map((c, i) => {
             const otherPattern = patterns.find(x => x.name === c.other);
             return (
-              <div key={i} style={{
-                padding: "16px 0",
-                borderBottom: i < p.confusables.length - 1 ? "1px solid #1a1a1a" : "none",
-              }}>
+              <div key={i} style={{ padding: "16px 0", borderBottom: i < p.confusables.length - 1 ? "1px solid #1a1a1a" : "none" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10, flexWrap: "wrap" }}>
                   <span style={{ fontSize: 13, fontWeight: 700, color: p.color }}>{p.name}</span>
                   <span style={{ fontSize: 11, color: "#444" }}>vs</span>
-                  <span style={{
-                    fontSize: 13, fontWeight: 700,
-                    color: otherPattern?.color || "#aaa",
-                    cursor: "pointer",
-                    textDecoration: "underline",
-                    textDecorationStyle: "dotted",
-                  }}
-                    onClick={() => { selectPattern(otherPattern); setTab("vs"); }}
-                  >{c.other}</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: otherPattern?.color || "#aaa", cursor: "pointer", textDecoration: "underline", textDecorationStyle: "dotted" }}
+                    onClick={() => { selectPattern(otherPattern); setTab("vs"); }}>
+                    {c.other}
+                  </span>
                 </div>
                 <div style={{ background: "#0d0d0d", borderRadius: 6, padding: "10px 14px", marginBottom: 8, borderLeft: "2px solid #2a2a2a" }}>
-                  <span style={{ fontSize: 11, color: "#555", textTransform: "uppercase", letterSpacing: 1 }}>Why they're similar: </span>
+                  <span style={{ fontSize: 11, color: "#555", textTransform: "uppercase", letterSpacing: 1 }}>Why similar: </span>
                   <span style={{ fontSize: 13, color: "#888" }}>{c.similarity}</span>
                 </div>
                 <div style={{ background: "#0d0d0d", borderRadius: 6, padding: "10px 14px", marginBottom: 8, borderLeft: `2px solid ${p.color}66` }}>
-                  <span style={{ fontSize: 11, color: "#555", textTransform: "uppercase", letterSpacing: 1 }}>How to tell them apart: </span>
+                  <span style={{ fontSize: 11, color: "#555", textTransform: "uppercase", letterSpacing: 1 }}>How to tell apart: </span>
                   <span style={{ fontSize: 13, color: "#ccc", lineHeight: 1.6 }}>{c.difference}</span>
                 </div>
                 <div style={{ background: `${p.color}10`, border: `1px solid ${p.color}33`, borderRadius: 6, padding: "10px 14px" }}>
@@ -3149,44 +3510,40 @@ export default function DSAPatterns() {
         <div style={{ background: "#0a0a0a", border: "1px solid #1e1e1e", borderRadius: 10, overflow: "hidden" }}>
           <div style={{ background: "#111", borderBottom: "1px solid #1e1e1e", padding: "10px 18px", display: "flex", gap: 8, flexWrap: "wrap" }}>
             {p.templates.map((t, i) => (
-              <button
-                key={i}
-                onClick={() => setTemplateIdx(i)}
-                style={{
-                  padding: "5px 12px",
-                  borderRadius: 5,
-                  border: "none",
-                  cursor: "pointer",
-                  fontFamily: "inherit",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  background: templateIdx === i ? p.color : "#1e1e1e",
-                  color: templateIdx === i ? "#000" : "#666",
-                  transition: "all 0.15s",
-                  whiteSpace: "nowrap",
-                }}
-              >
+              <button key={i} onClick={() => setTemplateIdx(i)} style={{
+                padding: "5px 12px", borderRadius: 5, border: "none", cursor: "pointer",
+                fontFamily: "inherit", fontSize: 11, fontWeight: 600,
+                background: templateIdx === i ? p.color : "#1e1e1e",
+                color: templateIdx === i ? "#000" : "#666",
+                transition: "all 0.15s", whiteSpace: "nowrap",
+              }}>
                 {t.label}
               </button>
             ))}
           </div>
-          {p.templates[templateIdx]?.hint && (
-            <div style={{ padding: "10px 18px", background: "#0f0f0f", borderBottom: "1px solid #1e1e1e", fontSize: 12, color: "#888" }}>
-              <span style={{ color: p.color, fontWeight: 700 }}>🔍 Use when: </span>
-              {p.templates[templateIdx].hint}
+          {(p.templates[templateIdx]?.hint || p.templates[templateIdx]?.complexity) && (
+            <div style={{ padding: "10px 18px", background: "#0f0f0f", borderBottom: "1px solid #1e1e1e", fontSize: 12, color: "#888", display: "flex", flexWrap: "wrap", gap: 12, alignItems: "flex-start" }}>
+              {p.templates[templateIdx]?.complexity && (
+                <span style={{
+                  background: `${p.color}18`,
+                  border: `1px solid ${p.color}44`,
+                  color: p.color,
+                  padding: "3px 10px",
+                  borderRadius: 6,
+                  fontSize: 11,
+                  fontWeight: 700,
+                  flexShrink: 0,
+                  whiteSpace: "nowrap",
+                }}>
+                  {p.templates[templateIdx].complexity}
+                </span>
+              )}
+              {p.templates[templateIdx]?.hint && (
+                <span><span style={{ color: p.color, fontWeight: 700 }}>🔍 Use when: </span>{p.templates[templateIdx].hint}</span>
+              )}
             </div>
           )}
-          <pre style={{
-            margin: 0,
-            padding: 20,
-            fontSize: isMobile ? 11 : 13,
-            lineHeight: 1.8,
-            color: "#b0c4de",
-            overflowX: "auto",
-            whiteSpace: "pre",
-          }}>
-            {p.templates[templateIdx]?.code}
-          </pre>
+          <CodeBlock code={p.templates[templateIdx]?.code || ""} label={`${p.name}-${templateIdx}`} color={p.color} />
         </div>
       )}
     </div>
@@ -3194,34 +3551,27 @@ export default function DSAPatterns() {
     <div style={{ background: "#111", border: "1px solid #1e1e1e", borderRadius: 10, padding: 40, textAlign: "center", color: "#333" }}>
       <div style={{ fontSize: 40, marginBottom: 12 }}>←</div>
       <div style={{ fontSize: 14 }}>select a pattern to see keywords, tells, and template</div>
+      <div style={{ marginTop: 16, fontSize: 12, color: "#333" }}>j/k or ↑↓ to navigate · 1-6 to switch tabs · r to mark reviewed</div>
     </div>
   );
 
+  // Sidebar list
   const listPanel = (
     <div>
       <div style={{ fontSize: 12, color: "#444", letterSpacing: 2, textTransform: "uppercase", marginBottom: 10 }}>
-        {filtered.length} patterns
+        {filtered.length} patterns · <span style={{ color: "#26de81" }}>{reviewed.size} reviewed</span>
       </div>
       {search ? (
-        // When searching, show flat list
         filtered.map(pat => (
-          <div
-            key={pat.name}
-            onClick={() => selectPattern(pat)}
-            style={{
-              padding: "10px 14px",
-              marginBottom: 4,
-              borderRadius: 6,
-              cursor: "pointer",
-              background: selected?.name === pat.name ? "#1a1a1a" : "transparent",
-              borderLeft: selected?.name === pat.name ? `3px solid ${pat.color}` : "3px solid transparent",
-              transition: "all 0.1s",
-            }}
-          >
-            <div style={{ fontSize: 15, fontWeight: 600, color: selected?.name === pat.name ? pat.color : "#ccc" }}>
-              {pat.name}
+          <div key={pat.name} onClick={() => selectPattern(pat)} style={{
+            padding: "10px 14px", marginBottom: 4, borderRadius: 6, cursor: "pointer",
+            background: selected?.name === pat.name ? "#1a1a1a" : "transparent",
+            borderLeft: selected?.name === pat.name ? `3px solid ${pat.color}` : "3px solid transparent",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{ fontSize: 15, fontWeight: 600, color: selected?.name === pat.name ? pat.color : "#ccc" }}>{pat.name}</div>
+              {reviewed.has(pat.name) && <span style={{ color: "#26de81", fontSize: 12 }}>✓</span>}
             </div>
-            {/* Show the matching keyword/tell/hint that caused this result */}
             {(() => {
               const q = search.toLowerCase();
               const matchedKw = pat.keywords.find(k => k.toLowerCase().includes(q));
@@ -3229,54 +3579,41 @@ export default function DSAPatterns() {
               const matchedHint = !matchedKw && !matchedTell && pat.templates.find(t => t.hint && t.hint.toLowerCase().includes(q));
               const matchText = matchedKw || (matchedTell && matchedTell.slice(0, 50)) || (matchedHint && matchedHint.label);
               return matchText ? (
-                <div style={{ fontSize: 12, color: pat.color, marginTop: 3, opacity: 0.8 }}>
-                  matched: {matchText}
-                </div>
+                <div style={{ fontSize: 12, color: pat.color, marginTop: 3, opacity: 0.8 }}>matched: {matchText}</div>
               ) : (
-                <div style={{ fontSize: 13, color: "#555", marginTop: 3, lineHeight: 1.4 }}>
-                  {pat.keywords.slice(0, 3).join(" · ")}
-                </div>
+                <div style={{ fontSize: 13, color: "#555", marginTop: 3 }}>{pat.keywords.slice(0, 3).join(" · ")}</div>
               );
             })()}
           </div>
         ))
       ) : (
-        // When not searching, show grouped
         patternGroups.map(group => {
           const groupPatterns = patterns.filter(pat => group.patterns.includes(pat.name));
+          const isCollapsed = collapsedGroups.has(group.label);
+          const groupReviewed = groupPatterns.filter(p => reviewed.has(p.name)).length;
           return (
             <div key={group.label} style={{ marginBottom: 16 }}>
-              <div style={{
-                fontSize: 11,
-                color: "#444",
-                letterSpacing: 2,
-                textTransform: "uppercase",
-                padding: "4px 14px 6px",
-                marginBottom: 2,
-                borderBottom: "1px solid #1a1a1a",
-              }}>
-                {group.label}
+              <div
+                onClick={() => toggleGroup(group.label)}
+                style={{ fontSize: 11, color: "#555", letterSpacing: 2, textTransform: "uppercase", padding: "4px 14px 6px", marginBottom: 2, borderBottom: "1px solid #1a1a1a", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", userSelect: "none" }}
+              >
+                <span>{group.label}</span>
+                <span style={{ color: "#333" }}>
+                  {groupReviewed > 0 && <span style={{ color: "#26de81", marginRight: 6 }}>{groupReviewed}/{groupPatterns.length}</span>}
+                  {isCollapsed ? "▸" : "▾"}
+                </span>
               </div>
-              {groupPatterns.map(pat => (
-                <div
-                  key={pat.name}
-                  onClick={() => selectPattern(pat)}
-                  style={{
-                    padding: "10px 14px",
-                    marginBottom: 2,
-                    borderRadius: 6,
-                    cursor: "pointer",
-                    background: selected?.name === pat.name ? "#1a1a1a" : "transparent",
-                    borderLeft: selected?.name === pat.name ? `3px solid ${pat.color}` : "3px solid transparent",
-                    transition: "all 0.1s",
-                  }}
-                >
-                  <div style={{ fontSize: 15, fontWeight: 600, color: selected?.name === pat.name ? pat.color : "#ccc" }}>
-                    {pat.name}
+              {!isCollapsed && groupPatterns.map(pat => (
+                <div key={pat.name} onClick={() => selectPattern(pat)} style={{
+                  padding: "10px 14px", marginBottom: 2, borderRadius: 6, cursor: "pointer",
+                  background: selected?.name === pat.name ? "#1a1a1a" : "transparent",
+                  borderLeft: selected?.name === pat.name ? `3px solid ${pat.color}` : "3px solid transparent",
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: selected?.name === pat.name ? pat.color : "#ccc" }}>{pat.name}</div>
+                    {reviewed.has(pat.name) && <span style={{ color: "#26de81", fontSize: 12 }}>✓</span>}
                   </div>
-                  <div style={{ fontSize: 13, color: "#555", marginTop: 3, lineHeight: 1.4 }}>
-                    {pat.keywords.slice(0, 3).join(" · ")}
-                  </div>
+                  <div style={{ fontSize: 13, color: "#555", marginTop: 3 }}>{pat.keywords.slice(0, 3).join(" · ")}</div>
                 </div>
               ))}
             </div>
@@ -3286,154 +3623,86 @@ export default function DSAPatterns() {
     </div>
   );
 
+  const isLandscapeMobile = isLandscape && window.innerWidth < 1024;
+
   return (
-    <div style={{
-      fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
-      background: "#0d0d0d",
-      minHeight: "100vh",
-      color: "#e0e0e0",
-    }}>
+    <div style={{ fontFamily: "'JetBrains Mono', 'Fira Code', monospace", background: "#0d0d0d", minHeight: "100vh", color: "#e0e0e0" }}>
       <style>{`
         * { box-sizing: border-box; }
         html { font-size: 17px; }
         pre, code { font-size: 13px !important; line-height: 1.8; }
-        .ui-text-sm { font-size: 13px; }
-        .ui-text-md { font-size: 15px; }
-        .ui-text-lg { font-size: 18px; }
+        @media print {
+          .no-print { display: none !important; }
+          body { background: white; color: black; }
+          pre { border: 1px solid #ccc; }
+        }
       `}</style>
+
       {/* Header */}
-      <div style={{
-        borderBottom: "1px solid #1e1e1e",
-        padding: isMobile ? "16px 16px 14px" : "24px 32px 20px",
-        background: "#0d0d0d",
-        position: "sticky",
-        top: 0,
-        zIndex: 10,
-      }}>
+      <div className="no-print" style={{ borderBottom: "1px solid #1e1e1e", padding: isMobile ? "12px 16px" : "18px 24px", background: "#0d0d0d", position: "sticky", top: 0, zIndex: 10 }}>
         <div style={{ maxWidth: "100%", margin: "0 auto" }}>
-          {!(isMobile && showDetail) && !(isLandscape && window.innerWidth < 1024 && selected) && (
+          {!(isMobile && showDetail) && !(isLandscapeMobile && selected) && (
             <span style={{ fontSize: 10, color: "#555", letterSpacing: 3, textTransform: "uppercase" }}>Interview Prep</span>
           )}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10, marginTop: isMobile && showDetail ? 0 : 4 }}>
-            {/* On mobile in detail view: show back button instead of title */}
-            {(isMobile && showDetail) || (isLandscape && window.innerWidth < 1024 && selected) ? (
-              <button
-                onClick={() => { setShowDetail(false); setSelected(null); }}
-                style={{
-                  background: "none",
-                  border: "1px solid #2a2a2a",
-                  borderRadius: 6,
-                  color: "#aaa",
-                  fontFamily: "inherit",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  padding: "7px 14px",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                }}
-              >
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8, marginTop: 4 }}>
+            {/* Left: back button or title */}
+            {(isMobile && showDetail) || (isLandscapeMobile && selected) ? (
+              <button onClick={() => { setShowDetail(false); setSelected(null); }}
+                style={{ background: "none", border: "1px solid #2a2a2a", borderRadius: 6, color: "#aaa", fontFamily: "inherit", fontSize: 13, fontWeight: 600, padding: "7px 14px", cursor: "pointer" }}>
                 ← Back
               </button>
             ) : (
-              <h1 style={{ margin: 0, fontSize: isMobile ? 16 : 22, fontWeight: 700, color: "#fff", letterSpacing: -0.5 }}>
+              <h1 style={{ margin: 0, fontSize: isMobile ? 15 : 20, fontWeight: 700, color: "#fff", letterSpacing: -0.5 }}>
                 DSA Pattern Recognition
               </h1>
             )}
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-              <button
-                onClick={() => setShowConstraints(v => !v)}
-                style={{
-                  background: showConstraints ? "#f9ca24" : "#1a1a1a",
-                  border: "1px solid #2a2a2a",
-                  borderRadius: 6,
-                  color: showConstraints ? "#000" : "#888",
-                  fontFamily: "inherit",
-                  fontSize: 13,
-                  fontWeight: 700,
-                  padding: "8px 14px",
-                  cursor: "pointer",
-                  letterSpacing: 1,
-                  textTransform: "uppercase",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                ⚡ Constraints
+
+            {/* Right: mode buttons + search */}
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+              {[
+                { mode: "normal", label: "📋 Patterns" },
+                { mode: "quickref", label: "⚡ Quick Ref" },
+                { mode: "quiz", label: "🧠 Quiz" },
+              ].map(({ mode, label }) => (
+                <button key={mode} onClick={() => setViewMode(viewMode === mode && mode !== "normal" ? "normal" : mode)}
+                  style={{ background: viewMode === mode ? "#fff" : "#1a1a1a", border: "1px solid #2a2a2a", borderRadius: 6, color: viewMode === mode ? "#000" : "#888", fontFamily: "inherit", fontSize: 11, fontWeight: 700, padding: "7px 12px", cursor: "pointer", whiteSpace: "nowrap" }}>
+                  {label}
+                </button>
+              ))}
+              <button onClick={() => setShowConstraints(v => !v)}
+                style={{ background: showConstraints ? "#f9ca24" : "#1a1a1a", border: "1px solid #2a2a2a", borderRadius: 6, color: showConstraints ? "#000" : "#888", fontFamily: "inherit", fontSize: 11, fontWeight: 700, padding: "7px 12px", cursor: "pointer", whiteSpace: "nowrap" }}>
+                n-size
+              </button>
+              <button onClick={() => window.print()}
+                style={{ background: "#1a1a1a", border: "1px solid #2a2a2a", borderRadius: 6, color: "#888", fontFamily: "inherit", fontSize: 11, fontWeight: 700, padding: "7px 12px", cursor: "pointer" }}>
+                🖨 Print
               </button>
               <input
                 value={search}
                 onChange={e => { setSearch(e.target.value); setSelected(null); setShowDetail(false); }}
                 placeholder="search..."
-                style={{
-                  background: "#1a1a1a",
-                  border: "1px solid #2a2a2a",
-                  borderRadius: 6,
-                  padding: "8px 14px",
-                  color: "#e0e0e0",
-                  fontFamily: "inherit",
-                  fontSize: 15,
-                  width: isMobile ? "100%" : 220,
-                  outline: "none",
-                  boxSizing: "border-box",
-                }}
+                style={{ background: "#1a1a1a", border: "1px solid #2a2a2a", borderRadius: 6, padding: "7px 14px", color: "#e0e0e0", fontFamily: "inherit", fontSize: 13, width: isMobile ? "100%" : 180, outline: "none" }}
               />
             </div>
           </div>
 
-          {/* Constraint Checker Panel */}
+          {/* Constraints panel */}
           {showConstraints && (
-            <div style={{
-              marginTop: 14,
-              background: "#111",
-              border: "1px solid #2a2a2a",
-              borderRadius: 10,
-              padding: "16px 20px",
-              display: "flex",
-              gap: isMobile ? 12 : 24,
-              flexWrap: "wrap",
-            }}>
+            <div style={{ marginTop: 12, background: "#111", border: "1px solid #2a2a2a", borderRadius: 10, padding: "14px 18px", display: "flex", gap: isMobile ? 12 : 24, flexWrap: "wrap" }}>
               {[
-                {
-                  range: "n ≤ 20",
-                  label: "Small",
-                  color: "#26de81",
-                  patterns: ["Backtracking", "Brute Force", "Recursion"],
-                  note: "Exponential OK (2^n, n!)"
-                },
-                {
-                  range: "n ≤ 10^6",
-                  label: "Medium",
-                  color: "#f9ca24",
-                  patterns: ["Two Pointers", "Sliding Window", "Greedy", "Heap", "DP"],
-                  note: "Need O(n) or O(n log n)"
-                },
-                {
-                  range: "n ≥ 10^7",
-                  label: "Large",
-                  color: "#FC5C65",
-                  patterns: ["Binary Search", "Math/Formula"],
-                  note: "O(log n) or O(1) only"
-                },
-              ].map(({ range, label, color, patterns, note }) => (
-                <div key={range} style={{ flex: 1, minWidth: 140 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                { range: "n ≤ 20", label: "Small", color: "#26de81", patterns: ["Backtracking", "Brute Force"], note: "Exponential OK (2^n, n!)" },
+                { range: "n ≤ 10^6", label: "Medium", color: "#f9ca24", patterns: ["Two Pointers", "Sliding Window", "Greedy", "Heap", "DP"], note: "O(n) or O(n log n)" },
+                { range: "n ≥ 10^7", label: "Large", color: "#FC5C65", patterns: ["Binary Search", "Math"], note: "O(log n) or O(1)" },
+              ].map(({ range, label, color, patterns: ps, note }) => (
+                <div key={range} style={{ flex: 1, minWidth: 130 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
                     <div style={{ width: 8, height: 8, borderRadius: "50%", background: color }} />
                     <span style={{ fontSize: 13, fontWeight: 700, color }}>{range}</span>
-                    <span style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: 1 }}>{label}</span>
                   </div>
                   <div style={{ fontSize: 11, color: "#555", marginBottom: 6 }}>{note}</div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-                    {patterns.map(pat => (
-                      <span key={pat} style={{
-                        background: `${color}18`,
-                        border: `1px solid ${color}33`,
-                        color,
-                        padding: "3px 8px",
-                        borderRadius: 4,
-                        fontSize: 13,
-                        fontWeight: 600,
-                      }}>{pat}</span>
+                    {ps.map(pat => (
+                      <span key={pat} style={{ background: `${color}18`, border: `1px solid ${color}33`, color, padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600 }}>{pat}</span>
                     ))}
                   </div>
                 </div>
@@ -3444,27 +3713,26 @@ export default function DSAPatterns() {
       </div>
 
       {/* Body */}
-      {isMobile ? (
-        // Portrait mobile: show list OR detail, not both
-        <div style={{ padding: "12px" }}>
-          {showDetail && selected ? detailPanel : listPanel}
-        </div>
-      ) : isLandscape && window.innerWidth < 1024 ? (
-        // Landscape mobile/tablet: full screen single panel, toggle between list and detail
-        <div style={{ height: "calc(100vh - 80px)", overflowY: "auto", padding: "12px 16px" }}>
-          {selected ? detailPanel : listPanel}
-        </div>
-      ) : (
-        // Desktop: side by side always visible
-        <div style={{ maxWidth: "100%", margin: "0 auto", padding: "20px 24px", display: "flex", gap: 24, height: "calc(100vh - 100px)" }}>
-          <div style={{ width: 300, flexShrink: 0, overflowY: "auto", paddingRight: 8 }}>
-            {listPanel}
+      {viewMode === "quickref" ? quickRefView
+        : viewMode === "quiz" ? quizView
+        : isMobile ? (
+          <div style={{ padding: "12px" }}>
+            {showDetail && selected ? detailPanel : listPanel}
           </div>
-          <div style={{ flex: 1, minWidth: 0, overflowY: "auto" }}>
-            {detailPanel}
+        ) : isLandscapeMobile ? (
+          <div style={{ height: "calc(100vh - 80px)", overflowY: "auto", padding: "12px 16px" }}>
+            {selected ? detailPanel : listPanel}
           </div>
-        </div>
-      )}
+        ) : (
+          <div style={{ maxWidth: "100%", margin: "0 auto", padding: "20px 24px", display: "flex", gap: 24, height: "calc(100vh - 100px)" }}>
+            <div style={{ width: 300, flexShrink: 0, overflowY: "auto", paddingRight: 8 }} className="no-print">
+              {listPanel}
+            </div>
+            <div style={{ flex: 1, minWidth: 0, overflowY: "auto" }}>
+              {detailPanel}
+            </div>
+          </div>
+        )}
     </div>
   );
 }
