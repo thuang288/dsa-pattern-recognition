@@ -3094,6 +3094,35 @@ const patternGroups = [
   { label: "Math & Bits", patterns: ["Math", "Bit Manipulation"] },
 ];
 
+// Seeded random using today's date as the seed.
+// This produces the same shuffle for the whole day, but a different one each new day.
+// Uses a simple mulberry32 PRNG — fast and good enough for shuffling.
+function seededRandom(seed) {
+  let s = seed;
+  return function() {
+    s |= 0; s = s + 0x6D2B79F5 | 0;
+    let t = Math.imul(s ^ s >>> 15, 1 | s);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+function getDailySeed() {
+  const d = new Date();
+  // YYYYMMDD as an integer — changes once per day
+  return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+}
+
+function dailyShuffle(arr) {
+  const rand = seededRandom(getDailySeed());
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
 export default function DSAPatterns() {
   const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState("");
@@ -3106,7 +3135,7 @@ export default function DSAPatterns() {
   const [collapsedGroups, setCollapsedGroups] = useState(new Set());
   const [reviewed, setReviewed] = useState(new Set());
   const [quizIdx, setQuizIdx] = useState(0);
-  const [quizOrder, setQuizOrder] = useState(() => patterns.map(p => p.name).sort(() => Math.random() - 0.5));
+  const [quizOrder, setQuizOrder] = useState(() => dailyShuffle(patterns.map(p => p.name)));
   const [quizMode, setQuizMode] = useState("keywords"); // "keywords" | "problem"
   const [showHint, setShowHint] = useState(0); // 0 = no hints, 1 = first hint, 2 = both hints
   const [quizRevealed, setQuizRevealed] = useState(false);
@@ -3379,6 +3408,9 @@ export default function DSAPatterns() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
         <div style={{ fontSize: 14, color: "#555" }}>
           Pattern <span style={{ color: "#fff" }}>{(quizIdx % quizOrder.length) + 1}</span> / {quizOrder.length}
+          <span style={{ fontSize: 11, color: "#444", marginLeft: 8 }}>
+            📅 {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} order
+          </span>
         </div>
         <div style={{ fontSize: 14 }}>
           Score: <span style={{ color: "#26de81", fontWeight: 700 }}>{quizScore.correct}</span>
