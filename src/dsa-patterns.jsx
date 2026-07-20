@@ -359,20 +359,44 @@ return result`
         label: "Largest Rectangle in Histogram",
         hint: "'largest rectangle in histogram', 'maximal rectangle in matrix' — for each bar, find how far left and right it can extend while staying the shortest",
         complexity: "O(n) time · O(n) space",
-        code: `stack = []    # stores indices, heights in increasing order
+        code: `# Stack stores (start_index, height) tuples
+# start_index = leftmost position this bar can extend to
+stack = []
 max_area = 0
-arr = heights + [0]  # append 0 as sentinel to force all remaining bars to be popped
 
-for i, h in enumerate(arr):
-    # current bar is shorter — pop taller bars and compute their max rectangle
-    while stack and arr[stack[-1]] > h:
-        height = arr[stack.pop()]
-        # width: from current position back to the next shorter bar in stack
-        width = i if not stack else i - stack[-1] - 1
-        max_area = max(max_area, height * width)
-    stack.append(i)
+for i, h in enumerate(heights):
+    start = i  # default: this bar starts at its own index
 
-return max_area`
+    # pop all bars taller than h — they can't extend further right
+    while stack and stack[-1][1] > h:
+        index, height = stack.pop()
+        max_area = max(max_area, height * (i - index))
+        # the shorter bar (h) can extend back to where the popped bar started
+        start = index
+
+    # push with the furthest left position this bar can reach
+    stack.append((start, h))
+
+# any bars still in stack extend all the way to the right end
+for i, h in stack:
+    max_area = max(max_area, h * (len(heights) - i))
+
+return max_area
+
+# ── Alternative: sentinel trick (avoids second loop) ──────────────
+# Append 0 at end — forces every remaining bar to get popped in the main loop
+# so the stack is empty when the loop ends, no cleanup needed
+#
+# stack = []
+# max_area = 0
+# for i, h in enumerate(heights + [0]):   # 0 flushes everything at the end
+#     start = i
+#     while stack and stack[-1][1] > h:
+#         index, height = stack.pop()
+#         max_area = max(max_area, height * (i - index))
+#         start = index
+#     stack.append((start, h))
+# return max_area`
       }
     ],
     confusables: [
@@ -2943,7 +2967,9 @@ const inputTypes = [
 
 // Paraphrased problem summaries (not verbatim LeetCode text) used for "Real Problem" quiz mode.
 // Each maps to the pattern that solves it.
+// Having multiple problems per pattern lets the daily seed pick a different one each day.
 const quizProblems = [
+  // ── Two Pointers ─────────────────────────────────────────────────
   {
     pattern: "Two Pointers",
     title: "Two Sum II",
@@ -2951,23 +2977,93 @@ const quizProblems = [
     hints: ["The array is already sorted — this is a key constraint", "You need O(1) extra space and can't use a hashmap"]
   },
   {
+    pattern: "Two Pointers",
+    title: "Valid Palindrome",
+    desc: "A string is a palindrome if it reads the same forwards and backwards (ignoring case and non-alphanumeric characters). Given a string, determine if it is a palindrome.",
+    hints: ["You're comparing characters from both ends moving toward the middle", "You need to skip non-alphanumeric characters as you move your pointers"]
+  },
+  {
+    pattern: "Two Pointers",
+    title: "Container With Most Water",
+    desc: "Given an array of heights representing vertical lines, find two lines that together with the x-axis form a container that holds the most water. Return the maximum amount of water it can store.",
+    hints: ["The area depends on the shorter of the two lines and the distance between them", "Start from the widest possible container and shrink inward — always move the shorter line"]
+  },
+  {
+    pattern: "Two Pointers",
+    title: "3Sum",
+    desc: "Given an integer array, return all unique triplets that sum to zero. The answer must not contain duplicate triplets.",
+    hints: ["Sort the array first, then fix one element and use two pointers on the rest", "To avoid duplicates, skip repeated values at each pointer position"]
+  },
+  // ── Sliding Window ────────────────────────────────────────────────
+  {
     pattern: "Sliding Window",
     title: "Longest Substring Without Repeating Characters",
     desc: "Given a string, find the length of the longest substring that doesn't contain any repeating characters.",
     hints: ["You're looking for a contiguous sequence (substring, not subsequence)", "Think about expanding and shrinking a window as you scan left to right"]
   },
   {
+    pattern: "Sliding Window",
+    title: "Minimum Window Substring",
+    desc: "Given two strings s and t, find the smallest substring of s that contains all characters of t (including duplicates). If no such window exists, return an empty string.",
+    hints: ["You need to track character frequencies inside your current window", "Expand right to find a valid window, then shrink left to minimize it"]
+  },
+  {
+    pattern: "Sliding Window",
+    title: "Maximum Average Subarray",
+    desc: "Given an integer array and an integer k, find the contiguous subarray of length exactly k that has the maximum average value.",
+    hints: ["The window size is FIXED at k — you slide it one element at a time", "Add the new right element and subtract the element that just left the left side"]
+  },
+  {
+    pattern: "Sliding Window",
+    title: "Longest Repeating Character Replacement",
+    desc: "Given a string and an integer k, you can replace at most k characters to make the string contain only one distinct letter. Return the length of the longest substring you can achieve.",
+    hints: ["Inside your window, track which character appears most frequently", "A window is valid when (window size - max frequency count) ≤ k"]
+  },
+  // ── Binary Search ─────────────────────────────────────────────────
+  {
     pattern: "Binary Search",
     title: "Search in Rotated Sorted Array",
-    desc: "You're given an array that was originally sorted in ascending order, then rotated at some unknown pivot. Given a target value, return its index, or -1 if it's not in the array. Your solution must run in O(log n) time.",
-    hints: ["O(log n) requirement is the giveaway — you must eliminate half the search space each step", "At any split point, at least one half of the array is guaranteed to be cleanly sorted"]
+    desc: "You're given an array that was originally sorted in ascending order, then rotated at some unknown pivot. Given a target value, return its index, or -1 if not found. Must run in O(log n).",
+    hints: ["O(log n) requirement means you must eliminate half the search space each step", "At any split point, at least one half of the array is guaranteed to be cleanly sorted"]
   },
+  {
+    pattern: "Binary Search",
+    title: "Find Minimum in Rotated Sorted Array",
+    desc: "Given a sorted array that has been rotated at some unknown pivot, find the minimum element. The array may contain duplicates.",
+    hints: ["The minimum is at the pivot point where the array 'wraps around'", "Compare mid to right: if mid > right, the minimum is in the right half"]
+  },
+  {
+    pattern: "Binary Search",
+    title: "Koko Eating Bananas",
+    desc: "Koko loves bananas. There are n piles of bananas and h hours before guards return. Koko can eat k bananas per hour from one pile at a time. Find the minimum k such that she can eat all bananas within h hours.",
+    hints: ["You're not searching for a value IN the array — you're searching for the answer itself", "The answer is somewhere between 1 and max(piles). Can you binary search on that range?"]
+  },
+  {
+    pattern: "Binary Search",
+    title: "Capacity To Ship Packages Within D Days",
+    desc: "Given package weights and D days, find the minimum ship capacity to ship all packages in order within D days. Packages must be shipped in order and cannot be split across days.",
+    hints: ["The answer (capacity) is a number in a range, not a position in an array", "Binary search on the answer: check if a given capacity is feasible in D days"]
+  },
+  // ── Monotonic Stack ───────────────────────────────────────────────
   {
     pattern: "Monotonic Stack",
     title: "Daily Temperatures",
-    desc: "Given a list of daily temperatures, return an array where each position tells you how many days you'd have to wait until a warmer temperature. If there's no future day that's warmer, put 0 for that day.",
-    hints: ["For each element, you need to find the NEXT element to its RIGHT that is greater than it", "You need an efficient way to look back at previous elements that are still 'waiting' for a warmer day"]
+    desc: "Given a list of daily temperatures, return an array where each position tells you how many days to wait until a warmer temperature. If there's no warmer future day, put 0.",
+    hints: ["For each element you need the NEXT element to its right that is greater", "Track elements that are still 'waiting' for their answer — what structure handles this?"]
   },
+  {
+    pattern: "Monotonic Stack",
+    title: "Next Greater Element I",
+    desc: "Given two arrays where nums1 is a subset of nums2, for each element in nums1 find the next greater element in nums2 (the first element to its right that is greater). Return -1 if none exists.",
+    hints: ["Process nums2 from left to right, keeping track of elements waiting for their next greater", "Use a hashmap to store answers, then look them up for nums1 elements"]
+  },
+  {
+    pattern: "Monotonic Stack",
+    title: "Largest Rectangle in Histogram",
+    desc: "Given an array of bar heights representing a histogram, find the area of the largest rectangle that can be formed within the histogram.",
+    hints: ["For each bar, the rectangle it anchors extends left and right until it hits a shorter bar", "You need to efficiently find the nearest shorter bar to the left and right of each position"]
+  },
+  // ── HashMap ───────────────────────────────────────────────────────
   {
     pattern: "HashMap",
     title: "Group Anagrams",
@@ -2975,11 +3071,43 @@ const quizProblems = [
     hints: ["You need to GROUP strings that share a property — what do all anagrams have in common?", "Think about what you could use as a key to bucket strings into the same group"]
   },
   {
+    pattern: "HashMap",
+    title: "Two Sum",
+    desc: "Given an array of integers and a target, return the indices of two numbers that add up to the target. Each input has exactly one solution and you may not use the same element twice.",
+    hints: ["For each number, you need to check if its complement (target - num) has been seen before", "A hashmap lets you look up whether a number exists in O(1) time"]
+  },
+  {
+    pattern: "HashMap",
+    title: "Longest Consecutive Sequence",
+    desc: "Given an unsorted array of integers, find the length of the longest sequence of consecutive integers. Your solution must run in O(n) time.",
+    hints: ["O(n) time rules out sorting — you need O(1) lookups", "Only start counting a sequence from its beginning (where num-1 is NOT in the set)"]
+  },
+  {
+    pattern: "HashMap",
+    title: "Valid Anagram",
+    desc: "Given two strings s and t, return true if t is an anagram of s — meaning both strings use the exact same characters with the exact same frequencies.",
+    hints: ["Count the frequency of each character in both strings", "Two strings are anagrams if their character frequency maps are identical"]
+  },
+  // ── Top K Elements / Heap ─────────────────────────────────────────
+  {
     pattern: "Top K Elements / Heap",
     title: "Kth Largest Element in an Array",
-    desc: "Given an unsorted array of integers and an integer k, find the kth largest element in the array. Note: it's the kth largest in sorted order, not the kth distinct element.",
+    desc: "Given an unsorted array of integers and an integer k, find the kth largest element. Note: it's the kth largest in sorted order, not the kth distinct element.",
     hints: ["You don't need to sort the whole array — you only care about the top K elements", "What data structure gives you the smallest of the top K efficiently?"]
   },
+  {
+    pattern: "Top K Elements / Heap",
+    title: "Top K Frequent Elements",
+    desc: "Given an integer array and an integer k, return the k most frequent elements. You may return the answer in any order.",
+    hints: ["First count frequencies, then find the k elements with the highest counts", "You don't need to sort all elements by frequency — just maintain the top k"]
+  },
+  {
+    pattern: "Top K Elements / Heap",
+    title: "K Closest Points to Origin",
+    desc: "Given an array of points on a 2D plane, return the k closest points to the origin (0, 0). The distance is Euclidean distance. You may return the answer in any order.",
+    hints: ["You need the k points with the SMALLEST distance — you don't need to sort all points", "Keep a heap of size k but you want to evict the FARTHEST point when the heap exceeds k"]
+  },
+  // ── Two Heaps ─────────────────────────────────────────────────────
   {
     pattern: "Two Heaps",
     title: "Find Median from Data Stream",
@@ -2987,47 +3115,145 @@ const quizProblems = [
     hints: ["Numbers arrive one at a time — you can't sort the whole array after each insertion", "The median sits at the boundary between the lower half and upper half of all numbers seen so far"]
   },
   {
+    pattern: "Two Heaps",
+    title: "Sliding Window Median",
+    desc: "Given an array of integers and a window size k, return the median of each window as it slides from left to right across the array.",
+    hints: ["Same idea as median from data stream, but elements also LEAVE the window as it slides", "You need to handle lazy deletion — removing elements that have left the window from your heaps"]
+  },
+  // ── DFS (Binary Trees) ────────────────────────────────────────────
+  {
     pattern: "DFS (Binary Trees)",
     title: "Binary Tree Paths",
-    desc: "Given the root of a binary tree, return all root-to-leaf paths in any order, where each path is represented as a string of node values separated by arrows.",
-    hints: ["You need to track the path as you go DOWN the tree and record it when you hit a leaf", "You need to UNDO your path tracking when backtracking — does this remind you of a pattern?"]
+    desc: "Given the root of a binary tree, return all root-to-leaf paths in any order, where each path is a string of node values separated by arrows.",
+    hints: ["You need to track the path as you go DOWN the tree and record it when you hit a leaf", "You need to UNDO your path tracking when backtracking up — carry the path as a parameter"]
   },
+  {
+    pattern: "DFS (Binary Trees)",
+    title: "Path Sum",
+    desc: "Given the root of a binary tree and an integer targetSum, return true if there's a root-to-leaf path where the node values sum to targetSum.",
+    hints: ["Traverse from root to leaf, subtracting each node's value from the target as you go", "At a leaf, check if the remaining target equals the leaf's value"]
+  },
+  {
+    pattern: "DFS (Binary Trees)",
+    title: "Inorder Traversal",
+    desc: "Given the root of a binary tree, return the inorder traversal of its node values (left, root, right). Try to also solve this iteratively.",
+    hints: ["Inorder = visit all of left subtree first, then current node, then all of right subtree", "For iterative: simulate the call stack by pushing nodes as you go as far left as possible"]
+  },
+  // ── DFS with Return Value (Trees) ─────────────────────────────────
   {
     pattern: "DFS with Return Value (Trees)",
     title: "Diameter of Binary Tree",
-    desc: "Given the root of a binary tree, return the length of the diameter — the longest path between any two nodes in the tree. This path may or may not pass through the root.",
-    hints: ["The longest path through any node = its left subtree height + its right subtree height", "You need information from BOTH children before you can compute the answer at any node"]
+    desc: "Given the root of a binary tree, return the length of the diameter — the longest path between any two nodes. This path may or may not pass through the root.",
+    hints: ["The longest path through any node = its left subtree height + its right subtree height", "You need info from BOTH children before you can compute the answer at any node"]
   },
+  {
+    pattern: "DFS with Return Value (Trees)",
+    title: "Balanced Binary Tree",
+    desc: "Given the root of a binary tree, determine if it is height-balanced — meaning the left and right subtrees of every node differ in height by at most 1.",
+    hints: ["You need the HEIGHT of each subtree to check if the difference is ≤ 1 at every node", "Can you propagate a 'failure signal' up the tree so you don't recheck subtrees?"]
+  },
+  {
+    pattern: "DFS with Return Value (Trees)",
+    title: "Binary Tree Maximum Path Sum",
+    desc: "Given a binary tree, find the path with the largest sum. A path is any sequence of nodes from some starting node to any other node. Each node can appear at most once.",
+    hints: ["The maximum path through any node uses at most one branch going down (left OR right) when returning to parent — but can use both when computing the answer at that node", "Track the global maximum separately from what you return up to the parent"]
+  },
+  // ── BST Patterns ──────────────────────────────────────────────────
   {
     pattern: "BST Patterns",
     title: "Validate Binary Search Tree",
-    desc: "Given the root of a binary tree, determine if it's a valid binary search tree, meaning every node's left subtree only contains values less than the node, and the right subtree only contains values greater.",
-    hints: ["Be careful — it's not enough to check each node against just its immediate children", "Each node must fall within a valid range that gets NARROWER as you go deeper into the tree"]
+    desc: "Given the root of a binary tree, determine if it's a valid BST — every node's left subtree contains only values less than the node, and the right subtree only greater values.",
+    hints: ["It's not enough to check each node against just its immediate children", "Each node must fall within a valid range that gets NARROWER as you go deeper"]
   },
+  {
+    pattern: "BST Patterns",
+    title: "Kth Smallest Element in a BST",
+    desc: "Given the root of a binary search tree and an integer k, return the kth smallest value among all node values.",
+    hints: ["There's a traversal order that visits BST nodes in sorted order", "Count nodes as you visit them in this order — stop when you reach the kth one"]
+  },
+  {
+    pattern: "BST Patterns",
+    title: "Lowest Common Ancestor of a BST",
+    desc: "Given a BST and two nodes p and q, find their lowest common ancestor — the deepest node that has both p and q as descendants (a node is a descendant of itself).",
+    hints: ["In a BST, if both targets are less than current node go left; if both greater go right", "When the targets split (one left, one right), the current node IS the LCA"]
+  },
+  // ── BFS (Graph/Matrix) ────────────────────────────────────────────
   {
     pattern: "BFS (Graph/Matrix)",
     title: "Rotting Oranges",
-    desc: "You're given a grid where each cell is empty, has a fresh orange, or has a rotten orange. Every minute, any fresh orange adjacent to a rotten one becomes rotten too. Return the minimum number of minutes until no fresh orange remains, or -1 if that's impossible.",
-    hints: ["The rot SPREADS outward simultaneously from ALL rotten oranges at once", "You're asked for the MINIMUM number of minutes — what traversal guarantees shortest/minimum?"]
+    desc: "You're given a grid with empty cells, fresh oranges, and rotten oranges. Every minute, fresh oranges adjacent to rotten ones become rotten. Return minimum minutes until no fresh oranges remain, or -1 if impossible.",
+    hints: ["The rot spreads from ALL rotten oranges simultaneously — not one at a time", "You're asked for MINIMUM time — what traversal guarantees shortest distance?"]
   },
+  {
+    pattern: "BFS (Graph/Matrix)",
+    title: "Word Ladder",
+    desc: "Given two words (begin and end) and a dictionary, find the length of the shortest transformation sequence from begin to end, where each step changes exactly one letter and every intermediate word must be in the dictionary.",
+    hints: ["You want the SHORTEST sequence — this is a shortest path problem", "Each word is a node; two words are connected if they differ by exactly one letter"]
+  },
+  {
+    pattern: "BFS (Graph/Matrix)",
+    title: "Shortest Path in Binary Matrix",
+    desc: "Given an n×n binary matrix, find the length of the shortest path from the top-left to the bottom-right cell, where you can only travel through cells with value 0 (8-directional movement). Return -1 if no path exists.",
+    hints: ["You want the MINIMUM number of steps — what traversal guarantees that?", "Start from top-left, explore all 8 directions, track visited cells to avoid cycles"]
+  },
+  // ── DFS (Graph/Matrix) ────────────────────────────────────────────
   {
     pattern: "DFS (Graph/Matrix)",
     title: "Number of Islands",
     desc: "Given a 2D grid of '1's (land) and '0's (water), count the number of islands. An island is formed by connecting adjacent lands horizontally or vertically.",
-    hints: ["You need to COUNT distinct connected regions in a 2D grid", "When you find an unvisited land cell, you want to mark the ENTIRE connected region as visited in one go"]
+    hints: ["You need to COUNT distinct connected regions in a 2D grid", "When you find an unvisited land cell, mark the ENTIRE connected region visited in one go"]
   },
+  {
+    pattern: "DFS (Graph/Matrix)",
+    title: "Flood Fill",
+    desc: "Given an image (2D array of pixel colors), a starting pixel, and a new color, perform a flood fill starting from the given pixel. Change the color of all connected pixels of the same color as the starting pixel.",
+    hints: ["From the starting cell, spread to all 4-directional neighbors of the same original color", "Mark cells as you visit them — change their color so you don't revisit"]
+  },
+  {
+    pattern: "DFS (Graph/Matrix)",
+    title: "Pacific Atlantic Water Flow",
+    desc: "Given an island's height grid, water flows to adjacent cells of equal or lower height. Find all cells from which water can flow to BOTH the Pacific (top/left edges) and Atlantic (bottom/right edges) oceans.",
+    hints: ["Instead of simulating water flowing down, work backwards — flood fill UP from each ocean's border", "Find cells reachable from Pacific borders AND cells reachable from Atlantic borders, then intersect"]
+  },
+  // ── Graph / Adjacency List ────────────────────────────────────────
   {
     pattern: "Graph / Adjacency List",
     title: "Course Schedule",
-    desc: "You're given the total number of courses and a list of prerequisite pairs. Determine if it's possible to finish all courses given these prerequisites (i.e. is there no circular dependency).",
-    hints: ["Courses and prerequisites form a directed relationship — what data structure models this?", "You can finish all courses only if there's a valid ORDER to take them in — what algorithm finds ordering with dependencies?"]
+    desc: "You're given the total number of courses and a list of prerequisite pairs. Determine if it's possible to finish all courses (i.e. is there no circular dependency).",
+    hints: ["Courses and prerequisites form a directed relationship — build a directed graph", "You can finish all courses only if there's no cycle in the dependency graph"]
   },
+  {
+    pattern: "Graph / Adjacency List",
+    title: "Number of Connected Components in an Undirected Graph",
+    desc: "Given n nodes and a list of undirected edges, return the number of connected components in the graph.",
+    hints: ["Build an adjacency list, then run traversal from each unvisited node", "Each time you start a new traversal from an unvisited node, you've found a new component"]
+  },
+  {
+    pattern: "Graph / Adjacency List",
+    title: "Clone Graph",
+    desc: "Given a reference to a node in a connected undirected graph, return a deep copy of the graph. Each node has a value and a list of neighbors.",
+    hints: ["You need to visit every node and create a new copy of each one", "Use a hashmap from original node → cloned node to avoid creating duplicates and handle cycles"]
+  },
+  // ── Union Find (DSU) ──────────────────────────────────────────────
   {
     pattern: "Union Find (DSU)",
     title: "Number of Provinces",
-    desc: "There are n cities, and you're given a matrix indicating which cities are directly connected. A province is a group of directly or indirectly connected cities. Return the total number of provinces.",
-    hints: ["You need to COUNT distinct connected groups — cities in the same province are directly OR indirectly connected", "Think about an efficient data structure that merges groups and tracks membership"]
+    desc: "There are n cities and you're given a matrix indicating which cities are directly connected. A province is a group of directly or indirectly connected cities. Return the total number of provinces.",
+    hints: ["You need to COUNT distinct connected groups", "Think about an efficient data structure that merges groups and tracks membership"]
   },
+  {
+    pattern: "Union Find (DSU)",
+    title: "Redundant Connection",
+    desc: "Given a tree with n nodes and n edges (one extra edge was added creating a cycle), find the redundant edge that can be removed to restore the tree structure.",
+    hints: ["Process edges one by one — the redundant edge connects two nodes already in the same group", "A data structure that efficiently tracks and merges connected components would help here"]
+  },
+  {
+    pattern: "Union Find (DSU)",
+    title: "Accounts Merge",
+    desc: "Given a list of accounts where each account has a name and a list of emails, merge accounts that share at least one email. Return merged accounts with sorted emails.",
+    hints: ["Two accounts belong together if they share ANY email — even transitively through a chain", "Treat emails as nodes and union them together — then group by connected component"]
+  },
+  // ── Backtracking ──────────────────────────────────────────────────
   {
     pattern: "Backtracking",
     title: "Subsets",
@@ -3035,52 +3261,180 @@ const quizProblems = [
     hints: ["The output is a LIST OF LISTS — you're returning ALL possible combinations, not just one", "At each element you make a binary choice: include it or skip it"]
   },
   {
+    pattern: "Backtracking",
+    title: "Combination Sum",
+    desc: "Given an array of distinct integers and a target, return all unique combinations where the chosen numbers sum to the target. The same number may be used an unlimited number of times.",
+    hints: ["You need to return ALL valid combinations — not just count them", "At each step choose a number, subtract from target, recurse — undo if target goes negative"]
+  },
+  {
+    pattern: "Backtracking",
+    title: "Permutations",
+    desc: "Given an array of distinct integers, return all possible permutations in any order.",
+    hints: ["A permutation uses every element exactly once in some order", "Track which elements you've already placed in the current permutation using a 'used' array"]
+  },
+  {
+    pattern: "Backtracking",
+    title: "Word Search",
+    desc: "Given an m×n grid of characters and a word, determine if the word exists in the grid. The word must be formed from sequentially adjacent cells (horizontally or vertically) and each cell can only be used once per path.",
+    hints: ["You're searching for ONE valid path — but you must try all starting positions and directions", "Mark cells as visited before recursing, then UNMARK them when backtracking"]
+  },
+  // ── Dynamic Programming ───────────────────────────────────────────
+  {
     pattern: "Dynamic Programming",
     title: "Coin Change",
     desc: "You're given an array of coin denominations and a target amount. Return the fewest number of coins needed to make up that amount. If it's not possible, return -1.",
-    hints: ["You want the MINIMUM — greedy (always take the biggest coin) doesn't always work here", "The answer for amount X depends on the answers for smaller amounts — overlapping subproblems"]
+    hints: ["Greedy (always take the biggest coin) doesn't always work here — try coins = [1,3,4], target = 6", "The answer for amount X depends on answers for smaller amounts — overlapping subproblems"]
   },
+  {
+    pattern: "Dynamic Programming",
+    title: "Longest Increasing Subsequence",
+    desc: "Given an integer array, return the length of the longest strictly increasing subsequence. A subsequence doesn't need to be contiguous.",
+    hints: ["'Subsequence' not 'subarray' — elements don't need to be adjacent, you can skip elements", "At each position, ask: what's the longest increasing subsequence that ends HERE?"]
+  },
+  {
+    pattern: "Dynamic Programming",
+    title: "House Robber",
+    desc: "You are a robber planning to rob houses along a street. You can't rob two adjacent houses. Given the amount of money in each house, find the maximum amount you can rob tonight.",
+    hints: ["At each house you make a binary choice: rob it (can't rob previous) or skip it (take previous best)", "The answer at each position depends on only the previous two positions"]
+  },
+  {
+    pattern: "Dynamic Programming",
+    title: "Unique Paths",
+    desc: "A robot is on an m×n grid starting at the top-left. It can only move right or down. Count the number of unique paths to reach the bottom-right corner.",
+    hints: ["At each cell there are only two ways to arrive: from above or from the left", "This is a 2D DP problem where dp[r][c] = dp[r-1][c] + dp[r][c-1]"]
+  },
+  // ── Greedy ────────────────────────────────────────────────────────
   {
     pattern: "Greedy",
     title: "Jump Game",
-    desc: "You're given an array where each element represents your maximum jump length from that position. Starting at index 0, determine if you can reach the last index.",
+    desc: "You're given an array where each element is your maximum jump length from that position. Starting at index 0, determine if you can reach the last index.",
     hints: ["You don't need to find the exact path — just whether it's POSSIBLE to reach the end", "At each position, ask: what is the farthest index I can reach from here?"]
   },
   {
+    pattern: "Greedy",
+    title: "Jump Game II",
+    desc: "Given the same jump-length array, find the MINIMUM number of jumps needed to reach the last index. You can assume it's always reachable.",
+    hints: ["You want MINIMUM jumps — at each jump, greedily choose the option that extends your reach the most", "Track the farthest reachable position within your current jump's range"]
+  },
+  {
+    pattern: "Greedy",
+    title: "Gas Station",
+    desc: "There are n gas stations in a circle. Each station has some gas and costs some gas to travel to the next station. Find the starting station from which you can complete the circuit, or return -1 if impossible.",
+    hints: ["If total gas >= total cost, a solution always exists", "When your running tank goes negative, the starting station must be AFTER the current position"]
+  },
+  // ── Intervals ─────────────────────────────────────────────────────
+  {
     pattern: "Intervals",
     title: "Merge Intervals",
-    desc: "Given an array of intervals where each interval is [start, end], merge all overlapping intervals and return an array of the non-overlapping intervals that cover all the input intervals.",
-    hints: ["The input is a list of [start, end] pairs — what should you do first to make overlaps easy to detect?", "Two intervals overlap when the next one's start is ≤ the current one's end"]
+    desc: "Given an array of intervals, merge all overlapping intervals and return an array of the non-overlapping intervals that cover all input intervals.",
+    hints: ["Sort by start time first so overlapping intervals are adjacent", "Two intervals overlap when the next one's start ≤ the current one's end"]
   },
+  {
+    pattern: "Intervals",
+    title: "Insert Interval",
+    desc: "Given a list of non-overlapping intervals sorted by start time and a new interval, insert the new interval and merge if necessary. Return the resulting list.",
+    hints: ["Process intervals in three phases: those before the new one, those overlapping, those after", "Two intervals overlap when one's start ≤ the other's end"]
+  },
+  {
+    pattern: "Intervals",
+    title: "Meeting Rooms II",
+    desc: "Given an array of meeting time intervals, find the minimum number of conference rooms required to hold all meetings.",
+    hints: ["Sort by start time, then process meetings in order", "When a meeting starts, check if any room is free — the room that ends earliest"]
+  },
+  // ── Stack ─────────────────────────────────────────────────────────
   {
     pattern: "Stack",
     title: "Valid Parentheses",
-    desc: "Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid — meaning every bracket is closed by the same type in the correct order.",
-    hints: ["You need to match pairs — the most recent open bracket must be closed first (last-in first-out)", "What data structure naturally handles 'most recently seen' lookups?"]
+    desc: "Given a string containing just '(', ')', '{', '}', '[', ']', determine if it's valid — every bracket must be closed in the correct order.",
+    hints: ["You need to match pairs — the most recent open bracket must be closed first (LIFO)", "What data structure naturally handles 'most recently seen' lookups?"]
   },
+  {
+    pattern: "Stack",
+    title: "Min Stack",
+    desc: "Design a stack that supports push, pop, top, and retrieving the minimum element — all in O(1) time.",
+    hints: ["The tricky part is getMin() in O(1) — the minimum changes as elements are popped", "Store extra information alongside each element so you always know the current minimum"]
+  },
+  {
+    pattern: "Stack",
+    title: "Decode String",
+    desc: "Given an encoded string like '3[a2[c]]', decode it. The encoding rule is k[encoded_string] meaning the string inside the brackets is repeated k times.",
+    hints: ["Brackets can be NESTED — inner brackets must be decoded before outer ones", "When you hit '[', save your current state; when you hit ']', restore the previous state and multiply"]
+  },
+  // ── Linked List ───────────────────────────────────────────────────
   {
     pattern: "Linked List",
     title: "Linked List Cycle",
-    desc: "Given the head of a linked list, determine if the linked list has a cycle in it, meaning some node can be reached again by continuously following the next pointer.",
+    desc: "Given the head of a linked list, determine if it has a cycle — some node can be reached again by continuously following next pointers.",
     hints: ["You need O(1) space — you can't store all visited nodes in a set", "Think about two pointers moving at DIFFERENT SPEEDS through the list"]
   },
   {
+    pattern: "Linked List",
+    title: "Reverse Linked List",
+    desc: "Given the head of a singly linked list, reverse the list and return the new head.",
+    hints: ["You need to redirect each node's next pointer to point to its predecessor", "Use three pointers: previous, current, and a temporary to save next before overwriting"]
+  },
+  {
+    pattern: "Linked List",
+    title: "Remove Nth Node From End of List",
+    desc: "Given the head of a linked list and n, remove the nth node from the end of the list and return the head.",
+    hints: ["You need to find the nth node from the END without knowing the length upfront", "Can two pointers with a specific gap between them let you find this position in one pass?"]
+  },
+  // ── Math ──────────────────────────────────────────────────────────
+  {
     pattern: "Math",
     title: "Happy Number",
-    desc: "A number is 'happy' if repeatedly replacing it with the sum of the squares of its digits eventually reaches 1. Given a number, determine if it's happy.",
+    desc: "A number is 'happy' if repeatedly replacing it with the sum of the squares of its digits eventually reaches 1. Determine if a number is happy.",
     hints: ["If it's NOT happy, the sequence will eventually CYCLE — never reaching 1", "How do you detect a cycle in a sequence efficiently with O(1) space?"]
   },
   {
+    pattern: "Math",
+    title: "Pow(x, n)",
+    desc: "Implement pow(x, n) which calculates x raised to the power n. Handle negative exponents. Do not use the built-in power function.",
+    hints: ["A naive loop is O(n) — can you do better by halving the problem each step?", "x^n = (x^2)^(n/2) when n is even — this halves the exponent each step"]
+  },
+  {
+    pattern: "Math",
+    title: "Missing Number",
+    desc: "Given an array containing n distinct numbers in the range [0, n], return the one missing number.",
+    hints: ["The sum of numbers 0 to n is a known formula — compare expected vs actual sum", "Alternatively, XOR has a property that makes all duplicate numbers cancel out"]
+  },
+  // ── Bit Manipulation ──────────────────────────────────────────────
+  {
     pattern: "Bit Manipulation",
     title: "Single Number",
-    desc: "Given a non-empty array of integers where every element appears twice except for one, find that single element. Your algorithm should run in linear time and use constant extra space.",
+    desc: "Given a non-empty array where every element appears twice except for one, find that single element. Must run in linear time and use constant extra space.",
     hints: ["O(1) space rules out using a hashmap or set to count occurrences", "What operation, when applied twice to the same number, gives you 0?"]
   },
+  {
+    pattern: "Bit Manipulation",
+    title: "Number of 1 Bits",
+    desc: "Write a function that takes an unsigned integer and returns the number of '1' bits it has (also known as the Hamming weight).",
+    hints: ["You need to inspect each bit of the number to check if it's 1", "There's a bit trick that removes exactly one '1' bit per operation — how many operations until the number becomes 0?"]
+  },
+  {
+    pattern: "Bit Manipulation",
+    title: "Counting Bits",
+    desc: "Given an integer n, return an array of length n+1 where each index i contains the number of 1 bits in the binary representation of i.",
+    hints: ["For each number, can you reuse the answer you already computed for a smaller number?", "The number of 1 bits in i equals the number of 1 bits in (i >> 1) plus the last bit of i"]
+  },
+  // ── Prefix Sum ────────────────────────────────────────────────────
   {
     pattern: "Prefix Sum",
     title: "Subarray Sum Equals K",
     desc: "Given an array of integers and an integer k, return the total number of contiguous subarrays whose sum equals k.",
-    hints: ["A sliding window won't work here because negative numbers mean the window can't just shrink from the left", "If you know the cumulative sum up to index j, how do you find subarrays ending at j that sum to k?"]
+    hints: ["A sliding window won't work — negative numbers mean the window can't just shrink from left", "If you know the cumulative sum up to index j, how do you find subarrays ending at j that sum to k?"]
+  },
+  {
+    pattern: "Prefix Sum",
+    title: "Range Sum Query - Immutable",
+    desc: "Given an integer array, handle multiple queries each asking for the sum of elements between indices i and j (inclusive). The array doesn't change between queries.",
+    hints: ["Computing the sum from scratch for each query is O(n) per query — too slow for many queries", "Can you precompute something once that makes each query O(1)?"]
+  },
+  {
+    pattern: "Prefix Sum",
+    title: "Product of Array Except Self",
+    desc: "Given an integer array, return an array where each element is the product of all other elements in the original array. You must not use division and must run in O(n).",
+    hints: ["For each position, you need the product of everything to its LEFT and everything to its RIGHT", "Make two passes: one left-to-right building prefix products, one right-to-left building suffix products"]
   },
 ];
 
@@ -3402,7 +3756,10 @@ export default function DSAPatterns() {
 
   // Quiz view
   const quizView = (() => {
-    const quizProblem = quizProblems.find(q => q.pattern === quizPattern.name);
+    // Pick a different problem for this pattern each day using the daily seed
+    const patternProblems = quizProblems.filter(q => q.pattern === quizPattern.name);
+    const dailyProblemIdx = getDailySeed() % (patternProblems.length || 1);
+    const quizProblem = patternProblems[dailyProblemIdx] || null;
     return (
     <div style={{ padding: "24px", maxWidth: 700, margin: "0 auto", overflowY: "auto", height: "calc(100vh - 100px)" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
